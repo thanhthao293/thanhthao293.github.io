@@ -1,0 +1,2372 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.4.555">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Thao Nguyen, Christina Bao">
+<meta name="dcterms.date" content="2024-10-23">
+
+<title>Miami University Annual Mileage Estimation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/all.min.css" rel="stylesheet">
+<link href="../../site_libs/quarto-contrib/fontawesome6-1.2.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html"> 
+<span class="menu-text">Projects</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../Thao Nguyen Resume.pdf" target="_blank"> 
+<span class="menu-text">Resume</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/thao-nguyen-5b1088219/" target="_blank"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/thanhthao293" target="_blank"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-right">
+      <h1 class="title">Miami University Annual Mileage Estimation</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">Statistical Analysis</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta column-page-right">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Thao Nguyen, Christina Bao </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 23, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of Contents</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><strong>1. Introduction</strong></a></li>
+  <li><a href="#methodology" id="toc-methodology" class="nav-link" data-scroll-target="#methodology"><strong>2. Methodology</strong></a>
+  <ul class="collapse">
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data"><strong>2.1. Data</strong></a></li>
+  <li><a href="#statistical-analysis" id="toc-statistical-analysis" class="nav-link" data-scroll-target="#statistical-analysis"><strong>2.2. Statistical Analysis</strong></a></li>
+  <li><a href="#software" id="toc-software" class="nav-link" data-scroll-target="#software"><strong>2.3. Software</strong></a></li>
+  </ul></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results"><strong>3. Results</strong></a>
+  <ul class="collapse">
+  <li><a href="#eda" id="toc-eda" class="nav-link" data-scroll-target="#eda"><strong>3.1. EDA</strong></a></li>
+  <li><a href="#estimate-construction" id="toc-estimate-construction" class="nav-link" data-scroll-target="#estimate-construction"><strong>3.2. Estimate Construction</strong></a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion"><strong>4. Conclusion</strong></a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><strong>5. References</strong></a></li>
+  </ul>
+</nav>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-right" id="quarto-document-content">
+
+
+
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction"><strong>1. Introduction</strong></h2>
+<p>Growing impacts of climate change have driven many worldwide companies and organizations to commit to carbon neutrality targets. Miami University (MU) is no exception, having submitted its Miami 2040 Climate Action Plan in May 2024 with the aim of achieving carbon neutrality on its Oxford campus by 2040. This plan builds on over a decade of commitment, as MU has been taking steps to reduce its carbon footprint since 2008. A significant component of this initiative is reducing emissions generated from employee and student commuting. MU has set ambitious targets, including reducing student commuting emissions by 50% by 2030 and 90% by 2040, while faculty and staff commuting emissions are also slated for a 90% reduction by 2040.</p>
+<p>This project, in line with President Crawford and the University Climate Action Plan, aims to analyze commuting patterns among MU employees and students. By estimating weekly and yearly commuting mileage and gasoline consumption for fiscal year 2023, the project aims to provide actionable insights intro transportation-related emissions at MU and support the institution’s broader sustainability goals.</p>
+</section>
+<section id="methodology" class="level2">
+<h2 class="anchored" data-anchor-id="methodology"><strong>2. Methodology</strong></h2>
+<section id="data" class="level3">
+<h3 class="anchored" data-anchor-id="data"><strong>2.1. Data</strong></h3>
+<p>The project utilizes two datasets, one for students and one for employees, both sourced from an optional survey included with the on-campus parking permit application. For fiscal year 2023, a total of 3,937 permits were issued for staff/faculty and 3,501 for students (537 of which were off-campus residents). This survey is designed to assess commuting patterns based on respondents’ home addresses, commute frequency, and the modes of transportation they use. The mileages were calculated using GIS based on the provided addresses. Those whose home addresses are more than 45 miles from campus (90 miles in a round trip) were removed from the data.</p>
+<p>The employee dataset contains 1976 rows and 15 variables, which are described as follows:</p>
+<ol type="1">
+<li><code>DESIGNATION</code>: The position or role of the person who completed the survey</li>
+<li><code>commute_days_fall_spring</code>: Number of days per week the employee commutes to the Oxford campus during the Fall/Spring semesters</li>
+<li><code>remote_days_fall_spring</code>: Number of days per week the employee works remotely during the Fall/Spring semesters</li>
+<li><code>commute_days_summer_jterm</code>: Number of days per week the employee commutes to the Oxford campus during Summer/J-term</li>
+<li><code>remote_days_summer_jterm</code>: Number of days per week the employee works remotely during Summer/J-term</li>
+<li><code>commute_gaspowered_100pct_time</code>: Whether the employee exclusively commutes using gas-powered vehicles</li>
+<li><code>drive_gas</code>: Percentage of total commuting time the employee uses a gas, hybrid electric, or diesel vehicle</li>
+<li><code>drive_electric</code>: Percentage of total commuting time the employee uses an electric vehicle</li>
+<li><code>walk</code>: Percentage of total commuting time the employee walks to the Oxford campus</li>
+<li><code>bicycle</code>: Percentage of total commuting time the employee uses a bicycle or other non-motorized means</li>
+<li><code>BCRTAbus</code>: Percentage of total commuting time the employee uses the BCRTA Bus</li>
+<li><code>carpool_as_passenger</code>: Percentage of total commuting time the employee vanpools or carpools as a passenger</li>
+<li><code>drive_motorcycle</code>: Percentage of total commuting time the employee drives a motorcycle, scooter, or moped</li>
+<li><code>other</code>: Percentage of total commuting time the employee uses other transportation methods not listed above</li>
+<li><code>daily_miles_one_way</code>: The one-way distance, in miles, the employee travels to the Oxford campus each day</li>
+</ol>
+<p>The student dataset contains 319 observation and 14 variables, which are described as follows:</p>
+<ol type="1">
+<li><code>DESIGNATION</code>: The position or role of the person who completed the survey</li>
+<li><code>live_on_campus_in_2021_2022</code>: Whether the student lived on campus in the 2021-2022 academic year</li>
+<li><code>commute_days_fall_spring</code>: Number of days per week the student commutes to the Oxford campus during the Fall/Spring semesters</li>
+<li><code>commute_days_jterm</code>: Number of days per week the student commutes to the Oxford campus during J-term</li>
+<li><code>commute_days_summer</code>: Number of days per week the student commutes to the Oxford campus during Summer</li>
+<li><code>walk</code>: Percentage of total commuting time the student walks to the Oxford campus</li>
+<li><code>drive_gas</code>: Percentage of total commuting time the student uses a gas, hybrid electric, or diesel vehicle</li>
+<li><code>drive_electric</code>: Percentage of total commuting time the student uses an electric vehicle</li>
+<li><code>bicycle</code>: Percentage of total commuting time the student uses a bicycle or other non-motorized transportation</li>
+<li><code>BCRTAbus</code>: Percentage of total commuting time the student uses the BCRTA bus</li>
+<li><code>carpool_as_passenger</code>: Percentage of total commuting time the student carpools or vanpools as a passenger</li>
+<li><code>drive_motorcycle</code>: Percentage of total commuting time the student uses a motorcycle, scooter, or moped</li>
+<li><code>other</code>: Percentage of total commuting time the student uses other transportation methods not listed above</li>
+<li><code>daily_miles_one_way</code>: The one-way distance, in miles, the student travels to the Oxford campus each day</li>
+</ol>
+<p>Pre-processing is necessary to address data quality issues identified in the survey responses. Since this project focuses on commuting to the Oxford campus, observations from students and employees who reported zero weekly commuting were excluded from the analysis, even if they reported travel mileage. In the original survey, respondents were asked to report the percentage of total time they use each mode of transportation. This led to inconsistencies, as some respondents interpreted the question differently, resulting in total percentages that did not sum to 100%. Specifically, in the student dataset, 13 rows had totals either exceeding or falling short of 100%, with 4 rows reporting 0%. Similarly, in the employee dataset, 22 rows did not total 100%, with 4 also reporting 0%. To resolve this, for rows where the total percentage was not 0%, the percentages for each mode of transportation were rescaled proportionally to sum to 100%.</p>
+<p>After rescaling, 1 row in the student data and 3 rows in the employee data still did not sum to 100%, as these respondents did not provide specific ratings for vehicle usage. While this does not impact mileage estimation, it may introduce uncertainty when estimating gas usage. Consequently, these observations were excluded from gas mileage estimates. Additionally, 7 rows in the employee data lack information on vehicle breakdown and whether gas-powered commuting occurred 100% of the time. Although these rows can still be used to estimate mileage due to known commuting days, again, they were excluded from gas mileage estimates due to insufficient data.</p>
+<p>Another issue found in the employee dataset involved discrepancies between the respondents’ answers. Some employees indicated they did not always commute using gas-powered vehicles but later reported using gas-powered vehicles 100% of the time. In such cases, their initial response was corrected to “Yes.” For respondents who answered “Yes” but did not provide a breakdown of transportation modes, their <code>drive_gas</code> percentage was set to 100%, and all other transportation modes were set to 0%.</p>
+<p>In the employee data, there are columns for remote days and commute days. However, in some instances, the sum of remote and commute days exceeds 5, which may indicate either a misunderstanding of the survey or a hybrid working arrangement. Given that the survey primarily focuses on commuting, only the commute days column was used for analysis.</p>
+</section>
+<section id="statistical-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="statistical-analysis"><strong>2.2. Statistical Analysis</strong></h3>
+<p>The survey included various modes of travel: driving (gas, hybrid electric, or diesel-powered vehicles), driving (plug-in electric vehicles), walking, bicycling or other non-motorized means, BCRTA bus, vanpooling/carpooling as a passenger, motorcycle, scooter or moped, and other. Since walking is not typically considered a commuting method, it was excluded from the total commuting percentage by subtracting the proportion of walking days from the total commute days to calculate adjusted commute days per week. When calculating weekly commuting mileage, it’s essential to account for the different number of weeks in a term. As such, each individual’s commuting frequency in a week was adjusted using a weighted average of the number of weeks across all terms (Fall, Spring, Summer, and J-term). The weekly commuting mileage for any respondent was then by calculated by multiplying the daily one-way miles traveled by 2, then by the adjusted number of days they commute in a week. To get an yearly estimate, there was no need to adjust for the commuting frequency in a week. It was calculated as the sum of the number of miles a person travels each Fall, Spring, Summer, and J-term semester, which was the daily one-way miles traveled times 2 times the number of days they travel in a week and times the number of weeks in a semester. There are 30 weeks in the Spring and Fall terms, excluding breaks for Fall, Thanksgiving, and Spring. The J-term is typically 4 weeks, while the Summer term is 12 weeks long. It is assumed that employees and students commute consistently, including in the finals week. The same procedure applies to both student data and employee data. To get a population estimate, the sum of miles for the sample was divided by the sample size and then multiplied by the population size. For the student data, the population of 537 off-campus students was used instead of 3,501 students because the sample student data only concerns off-campus students, so it would be more reasonable to try to generalize this to a population of students that also live off-campus.</p>
+<p>For estimating gasoline usage, only gas-powered vehicles and motorcycles were included in calculations. It is assumed the stakeholders would be more interested in personal vehicle gas consumption, so public types of commuting such as BCRTA buses or carpooling were not considered, even if they also use gas. Additionally, the nature of these types of transportation poses significant challenges to estimating gasoline usage with the limited information available: It is unknown if a person carpools in another person’s car that also commutes to MU (which would double count towards the estimate) or just drops them off at MU (which would not count towards the gasoline estimate). There is no way to know about this from the survey. Meanwhile, buses operate independently of passenger numbers and are available to everyone, so calculating gasoline usage for buses separately would be more accurate. Even then, lack of information such as how many buses are deployed at a time, bus model, or bus route (can be roughly traced and calculated) makes it difficult to give an accurate estimate (It was later revealed that the BCRTA buses are not included in MU’s carbon footprint as they don’t operate under MU). The procedure for estimating weekly and yearly gasoline usage is the same as estimating commuting mileage for both students and employees, but to determine students’ and employees’ mileage for gas-powered vehicles and motorcycles, miles traveled need to be converted to gallons. According to the U.S. Department of Energy, the average miles per gallon (MPG) for motorcycles is 44, and for cars, it is 24.4. Moreover, the US Environmental Protection Agency estimates that each gallon of gasoline produces approximately 8,887 grams of <span class="math inline">\(CO_2\)</span>. To convert gasoline usage to metric tons of <span class="math inline">\(CO_2\)</span>, the total <span class="math inline">\(CO_2\)</span> emissions in grams was divided by 1,000,000.</p>
+<p>While not required, it is crucial to know how the estimates may vary. To obtain standard errors for the population estimates, a bootstrapping method proposed by Min-Te Chao and Shaw-Hwa Lo (1985) was employed, which is suitable when the population size is known. This method calculates the ratio of the population size to the sample size, defined as <span class="math inline">\(k\)</span>. A bootstrap population is then created by repeating each sample from the original data <span class="math inline">\(k\)</span> times, resulting in a larger dataset. Random samples are taken from this new dataset to form the bootstrap samples. By repeatedly sampling and calculating different population total estimates from these resamples, the standard error of the population total can be determined.</p>
+<p>If <span class="math inline">\(k\)</span> is an integer, the bootstrapping procedure is implemented as described. However, if <span class="math inline">\(k\)</span> is not an integer, the nearest integers below and above <span class="math inline">\(k\)</span> are identified, referred to as <span class="math inline">\(k_1\)</span> and <span class="math inline">\(k_2\)</span>. Bootstrap populations are created for both <span class="math inline">\(k_1\)</span> and <span class="math inline">\(k_2\)</span>, denoted as <span class="math inline">\(N_1\)</span> and <span class="math inline">\(N_2\)</span>. During each bootstrapping round, either <span class="math inline">\(N_1\)</span> or <span class="math inline">\(N_2\)</span> is randomly selected as the bootstrap sample, with the selection probability weighted by how close <span class="math inline">\(k\)</span> is to <span class="math inline">\(k_1\)</span> or <span class="math inline">\(k_2\)</span>.</p>
+</section>
+<section id="software" class="level3">
+<h3 class="anchored" data-anchor-id="software"><strong>2.3. Software</strong></h3>
+<p>All data analysis tasks were performed using R version 4.3.1, along with additional packages, which are cited in the reference section.</p>
+</section>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results"><strong>3. Results</strong></h2>
+<section id="eda" class="level3">
+<h3 class="anchored" data-anchor-id="eda"><strong>3.1. EDA</strong></h3>
+<p>First, let’s examine the distribution of usage frequency in percentage for each vehicle type. Among students, the data reveals a predominant reliance on gas-powered vehicles, which is expected given that this information is collected during parking permit applications on campus. Interestingly, there is also a notable frequency of students walking to campus, surpassing the usage of other transportation modes such as bicycles, buses, and carpooling.</p>
+<div class="cell" data-layout-align="TRUE">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-TRUE">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-TRUE figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The same pattern can be observed for data related to employees where gas-powered vehicles is the most common and also the only means of transportation. The variability in transportation choices is limited, as employees typically have more housing options than students, allowing them to live farther from the main campus. Consequently, gas-powered vehicles tend to be the most practical choice for commuting. Additionally, the low usage of electric vehicles can be attributed to their relative scarcity compared to gas-powered vehicles, as well as the lack of supporting infrastructure in the Oxford area.</p>
+<div class="cell" data-layout-align="TRUE">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-TRUE">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-TRUE figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Looking at the distribution of daily miles driven one way, it can be seen that most people are within 5 miles of the campus. Fewer people travel more than 10 miles per day. It’s notable that the daily travel mileage distributions for students and employees are quite similar.</p>
+<div class="cell" data-layout-align="TRUE">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-TRUE">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-TRUE figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="estimate-construction" class="level3">
+<h3 class="anchored" data-anchor-id="estimate-construction"><strong>3.2. Estimate Construction</strong></h3>
+<section id="breakdown-of-weekly-and-annual-commuting-mileage-by-demographics" class="level4">
+<h4 class="anchored" data-anchor-id="breakdown-of-weekly-and-annual-commuting-mileage-by-demographics"><strong>3.2.1 Breakdown of weekly and annual commuting mileage by demographics</strong></h4>
+<div class="cell" data-layout-align="TRUE">
+<div class="cell-output-display">
+<div id="rdgtdnuwsy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#rdgtdnuwsy table {
+  font-family: Lato, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#rdgtdnuwsy thead, #rdgtdnuwsy tbody, #rdgtdnuwsy tfoot, #rdgtdnuwsy tr, #rdgtdnuwsy td, #rdgtdnuwsy th {
+  border-style: none;
+}
+
+#rdgtdnuwsy p {
+  margin: 0;
+  padding: 0;
+}
+
+#rdgtdnuwsy .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: 800px;
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: #FFFFFF;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#rdgtdnuwsy .gt_title {
+  color: #333333;
+  font-size: 24px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#rdgtdnuwsy .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#rdgtdnuwsy .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#rdgtdnuwsy .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#rdgtdnuwsy .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#rdgtdnuwsy .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#rdgtdnuwsy .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#rdgtdnuwsy .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#rdgtdnuwsy .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#rdgtdnuwsy .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#rdgtdnuwsy .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#rdgtdnuwsy .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#rdgtdnuwsy .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #F6F7F7;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#rdgtdnuwsy .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rdgtdnuwsy .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#rdgtdnuwsy .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#rdgtdnuwsy .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#rdgtdnuwsy .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rdgtdnuwsy .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#rdgtdnuwsy .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rdgtdnuwsy .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_striped {
+  background-color: #FAFAFA;
+}
+
+#rdgtdnuwsy .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rdgtdnuwsy .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rdgtdnuwsy .gt_sourcenote {
+  font-size: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rdgtdnuwsy .gt_left {
+  text-align: left;
+}
+
+#rdgtdnuwsy .gt_center {
+  text-align: center;
+}
+
+#rdgtdnuwsy .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#rdgtdnuwsy .gt_font_normal {
+  font-weight: normal;
+}
+
+#rdgtdnuwsy .gt_font_bold {
+  font-weight: bold;
+}
+
+#rdgtdnuwsy .gt_font_italic {
+  font-style: italic;
+}
+
+#rdgtdnuwsy .gt_super {
+  font-size: 65%;
+}
+
+#rdgtdnuwsy .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#rdgtdnuwsy .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#rdgtdnuwsy .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#rdgtdnuwsy .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#rdgtdnuwsy .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#rdgtdnuwsy .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#rdgtdnuwsy .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <caption><strong>Table 1. Weekly and Annual Mileage Estimate by Demographics</strong></caption>
+  <thead>
+    <tr class="gt_col_headings gt_spanner_row">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" scope="col" id=""></th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" style="font-weight: bold;" scope="colgroup" id="Weekly">
+        <span class="gt_column_spanner">Weekly</span>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="2" style="font-weight: bold;" scope="colgroup" id="Yearly">
+        <span class="gt_column_spanner">Yearly</span>
+      </th>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Total Miles">Total Miles</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Total Miles">Total Miles</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><th id="stub_1_1" scope="row" class="gt_row gt_center gt_stub">Employee</th>
+<td headers="stub_1_1 pop_weekly_miles" class="gt_row gt_center">365,037.02</td>
+<td headers="stub_1_1 pop_weekly_se" class="gt_row gt_center">5,972.42</td>
+<td headers="stub_1_1 pop_yearly_miles" class="gt_row gt_center">16,791,704.16</td>
+<td headers="stub_1_1 pop_yearly_se" class="gt_row gt_center">280,047.43</td></tr>
+    <tr><th id="stub_1_2" scope="row" class="gt_row gt_center gt_stub">Student</th>
+<td headers="stub_1_2 pop_weekly_miles" class="gt_row gt_center">38,717.44</td>
+<td headers="stub_1_2 pop_weekly_se" class="gt_row gt_center">1,395.23</td>
+<td headers="stub_1_2 pop_yearly_miles" class="gt_row gt_center">1,781,003.57</td>
+<td headers="stub_1_2 pop_yearly_se" class="gt_row gt_center">64,251.94</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>It can be seen that employees generally travel more than students, with weekly travel nearly 10 times greater and yearly travel about 15 times higher. This difference is understandable given that there are approximately 3,937 employees with parking permits compared to 537 off-campus students with parking permits. With around 7 times more employees than students and yet more than 10 times higher travelling distances, it is reasonable to say that employees have higher travel mileage than students do.</p>
+</section>
+<section id="breakdown-of-weekly-and-annual-commuting-gas-usage-by-demographics" class="level4">
+<h4 class="anchored" data-anchor-id="breakdown-of-weekly-and-annual-commuting-gas-usage-by-demographics"><strong>3.2.2. Breakdown of weekly and annual commuting gas usage by demographics</strong></h4>
+<div class="cell" data-layout-align="TRUE">
+<div class="cell-output-display">
+<div id="aqwhuvayec" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#aqwhuvayec table {
+  font-family: Lato, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#aqwhuvayec thead, #aqwhuvayec tbody, #aqwhuvayec tfoot, #aqwhuvayec tr, #aqwhuvayec td, #aqwhuvayec th {
+  border-style: none;
+}
+
+#aqwhuvayec p {
+  margin: 0;
+  padding: 0;
+}
+
+#aqwhuvayec .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: 800px;
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: #FFFFFF;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#aqwhuvayec .gt_title {
+  color: #333333;
+  font-size: 24px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#aqwhuvayec .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#aqwhuvayec .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#aqwhuvayec .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#aqwhuvayec .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#aqwhuvayec .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#aqwhuvayec .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#aqwhuvayec .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#aqwhuvayec .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#aqwhuvayec .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#aqwhuvayec .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#aqwhuvayec .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#aqwhuvayec .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #F6F7F7;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#aqwhuvayec .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqwhuvayec .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#aqwhuvayec .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#aqwhuvayec .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#aqwhuvayec .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqwhuvayec .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#aqwhuvayec .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqwhuvayec .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_striped {
+  background-color: #FAFAFA;
+}
+
+#aqwhuvayec .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqwhuvayec .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#aqwhuvayec .gt_sourcenote {
+  font-size: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#aqwhuvayec .gt_left {
+  text-align: left;
+}
+
+#aqwhuvayec .gt_center {
+  text-align: center;
+}
+
+#aqwhuvayec .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#aqwhuvayec .gt_font_normal {
+  font-weight: normal;
+}
+
+#aqwhuvayec .gt_font_bold {
+  font-weight: bold;
+}
+
+#aqwhuvayec .gt_font_italic {
+  font-style: italic;
+}
+
+#aqwhuvayec .gt_super {
+  font-size: 65%;
+}
+
+#aqwhuvayec .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#aqwhuvayec .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#aqwhuvayec .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#aqwhuvayec .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#aqwhuvayec .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#aqwhuvayec .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#aqwhuvayec .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" style="table-layout: fixed;; width: 800px" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <caption><strong>Table 2. Weekly and Annual Gasoline Usage and CO<sub>2</sub> Emission Estimate by Demographics</strong></caption>
+  <colgroup>
+    <col>
+    <col style="width:100px;">
+    <col>
+    <col style="width:100px;">
+    <col>
+    <col style="width:100px;">
+    <col>
+    <col style="width:100px;">
+    <col>
+  </colgroup>
+  <thead>
+    <tr class="gt_col_headings gt_spanner_row">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="2" colspan="1" scope="col" id=""></th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="4" style="font-weight: bold;" scope="colgroup" id="Weekly">
+        <span class="gt_column_spanner">Weekly</span>
+      </th>
+      <th class="gt_center gt_columns_top_border gt_column_spanner_outer" rowspan="1" colspan="4" style="font-weight: bold;" scope="colgroup" id="Yearly">
+        <span class="gt_column_spanner">Yearly</span>
+      </th>
+    </tr>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Gasoline Usage">Gasoline Usage</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Emitted CO<sub>2</sub> (mt)">Emitted CO<sub>2</sub> (mt)</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Gasoline Usage">Gasoline Usage</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Emitted CO<sub>2</sub> (mt)">Emitted CO<sub>2</sub> (mt)</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><th id="stub_1_1" scope="row" class="gt_row gt_center gt_stub">Employee</th>
+<td headers="stub_1_1 pop_weekly_gas" class="gt_row gt_center">14,609.80</td>
+<td headers="stub_1_1 pop_weekly_gas_se" class="gt_row gt_center">244.79</td>
+<td headers="stub_1_1 pop_weekly_co2" class="gt_row gt_center">129.86</td>
+<td headers="stub_1_1 pop_weekly_co2_se" class="gt_row gt_center">2.24</td>
+<td headers="stub_1_1 pop_yearly_gas" class="gt_row gt_center">672,051.49</td>
+<td headers="stub_1_1 pop_yearly_gas_se" class="gt_row gt_center">11,402.69</td>
+<td headers="stub_1_1 pop_yearly_co2" class="gt_row gt_center">5,972.51</td>
+<td headers="stub_1_1 pop_yearly_co2_se" class="gt_row gt_center">100.15</td></tr>
+    <tr><th id="stub_1_2" scope="row" class="gt_row gt_center gt_stub">Student</th>
+<td headers="stub_1_2 pop_weekly_gas" class="gt_row gt_center">2,320.91</td>
+<td headers="stub_1_2 pop_weekly_gas_se" class="gt_row gt_center">85.82</td>
+<td headers="stub_1_2 pop_weekly_co2" class="gt_row gt_center">20.63</td>
+<td headers="stub_1_2 pop_weekly_co2_se" class="gt_row gt_center">0.74</td>
+<td headers="stub_1_2 pop_yearly_gas" class="gt_row gt_center">70,017.06</td>
+<td headers="stub_1_2 pop_yearly_gas_se" class="gt_row gt_center">2,471.47</td>
+<td headers="stub_1_2 pop_yearly_co2" class="gt_row gt_center">622.25</td>
+<td headers="stub_1_2 pop_yearly_co2_se" class="gt_row gt_center">22.56</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+<p>Again, total gas consumption and CO<sub>2</sub> emissions are higher for employees than for students, reflecting the larger employee population. Employees’ weekly gas consumption and CO<sub>2</sub> emissions are generally about 7 times higher than those of students, while yearly totals are approximately 10 times greater. This disparity is not unusual, as many students do not commute during the summer and J-terms, whereas employees, particularly staff, continue to work during these periods.</p>
+</section>
+<section id="total-weekly-and-annual-commuting-mileage-gas-usage-and-co2-emissions-for-all-commuting-employees-and-students" class="level4">
+<h4 class="anchored" data-anchor-id="total-weekly-and-annual-commuting-mileage-gas-usage-and-co2-emissions-for-all-commuting-employees-and-students"><strong>3.2.3. Total weekly and annual commuting mileage, gas usage, and CO<sub>2</sub> emissions for all commuting employees and students</strong></h4>
+<p>The following table provides an estimate of commuting mileage, gas usage, and CO<sub>2</sub> emissions of all employees and students who applied for a parking permit on campus. This information can be compared to prior years’ statistics to gain an understanding of how well Miami University is doing on its road to carbon neutrality by 2040.</p>
+<div class="cell" data-layout-align="TRUE">
+<div class="cell-output-display">
+<div id="khbftvneli" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>@import url("https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+#khbftvneli table {
+  font-family: Lato, system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#khbftvneli thead, #khbftvneli tbody, #khbftvneli tfoot, #khbftvneli tr, #khbftvneli td, #khbftvneli th {
+  border-style: none;
+}
+
+#khbftvneli p {
+  margin: 0;
+  padding: 0;
+}
+
+#khbftvneli .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: 800px;
+  border-top-style: solid;
+  border-top-width: 3px;
+  border-top-color: #FFFFFF;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#khbftvneli .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#khbftvneli .gt_title {
+  color: #333333;
+  font-size: 24px;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#khbftvneli .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#khbftvneli .gt_heading {
+  background-color: #FFFFFF;
+  text-align: left;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#khbftvneli .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#khbftvneli .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#khbftvneli .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#khbftvneli .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#khbftvneli .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#khbftvneli .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#khbftvneli .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#khbftvneli .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#khbftvneli .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#khbftvneli .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#khbftvneli .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#khbftvneli .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#khbftvneli .gt_row {
+  padding-top: 7px;
+  padding-bottom: 7px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #F6F7F7;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#khbftvneli .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 80%;
+  font-weight: bolder;
+  text-transform: uppercase;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#khbftvneli .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#khbftvneli .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#khbftvneli .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#khbftvneli .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#khbftvneli .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#khbftvneli .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#khbftvneli .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#khbftvneli .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#khbftvneli .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#khbftvneli .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#khbftvneli .gt_striped {
+  background-color: #FAFAFA;
+}
+
+#khbftvneli .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#khbftvneli .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#khbftvneli .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#khbftvneli .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#khbftvneli .gt_sourcenote {
+  font-size: 12px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#khbftvneli .gt_left {
+  text-align: left;
+}
+
+#khbftvneli .gt_center {
+  text-align: center;
+}
+
+#khbftvneli .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#khbftvneli .gt_font_normal {
+  font-weight: normal;
+}
+
+#khbftvneli .gt_font_bold {
+  font-weight: bold;
+}
+
+#khbftvneli .gt_font_italic {
+  font-style: italic;
+}
+
+#khbftvneli .gt_super {
+  font-size: 65%;
+}
+
+#khbftvneli .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#khbftvneli .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#khbftvneli .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#khbftvneli .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#khbftvneli .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#khbftvneli .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#khbftvneli .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+<table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <caption><strong>Table 3. Estimates of Commuting Mileage, Gasoline Usage and CO<sub>2</sub> Emission Estimate</strong></caption>
+  <thead>
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id=""></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Weekly Estimate">Weekly Estimate</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="Yearly Estimate">Yearly Estimate</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1" scope="col" id="SE">SE</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><th id="stub_1_1" scope="row" class="gt_row gt_center gt_stub">Total Mileage</th>
+<td headers="stub_1_1 combined_weekly_miles" class="gt_row gt_center">401,900.36</td>
+<td headers="stub_1_1 combined_weekly_se" class="gt_row gt_center">6,199.55</td>
+<td headers="stub_1_1 combined_yearly_miles" class="gt_row gt_center">18,487,419.30</td>
+<td headers="stub_1_1 combined_yearly_se" class="gt_row gt_center">280,771.04</td></tr>
+    <tr><th id="stub_1_2" scope="row" class="gt_row gt_center gt_stub">Total Gasoline Usage</th>
+<td headers="stub_1_2 combined_weekly_miles" class="gt_row gt_center">16,986.32</td>
+<td headers="stub_1_2 combined_weekly_se" class="gt_row gt_center">267.12</td>
+<td headers="stub_1_2 combined_yearly_miles" class="gt_row gt_center">738,399.80</td>
+<td headers="stub_1_2 combined_yearly_se" class="gt_row gt_center">11,396.16</td></tr>
+    <tr><th id="stub_1_3" scope="row" class="gt_row gt_center gt_stub">Total CO2 Emission (Grams)</th>
+<td headers="stub_1_3 combined_weekly_miles" class="gt_row gt_center">150.99</td>
+<td headers="stub_1_3 combined_weekly_se" class="gt_row gt_center">2.28</td>
+<td headers="stub_1_3 combined_yearly_miles" class="gt_row gt_center">6,562.17</td>
+<td headers="stub_1_3 combined_yearly_se" class="gt_row gt_center">99.49</td></tr>
+  </tbody>
+  
+  
+</table>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion"><strong>4. Conclusion</strong></h2>
+<p>Estimates of commuting mileage, gasoline consumption, and CO₂ emissions were calculated for Miami University’s employees and students, along with specific breakdowns for each group.</p>
+<p>However, these estimates are based on several assumptions due to data limitations. For instance, it is assumed that walking is not typically considered a form of commuting, so reported daily one-way miles exclude walking distances. Additionally, only motorcycles and gas-powered vehicles are included in gasoline consumption estimates, as relevant data, like gasoline consumed per miles, is available for these modes, and it is assumed that the focus is on gasoline use for personal vehicles. Consequently, other transportation modes, such as the BCRTA bus or carpooling, are not considered due to complications in estimating their mileage and their non-personal nature. Finally, a major caveat with this data is that it comes from an optional, non-random survey, raising questions about what population it truly represents. While the sample size is large, it does not necessarily reflect the characteristics of the overall commuting population. Consequently, any estimation method — no matter how rigorous — is inherently speculative because the underlying data does not provide a valid basis for inference about the broader population.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references"><strong>5. References</strong></h2>
+<p>Meikle, S. (2023, October 5). <em>Miami University commits to carbon neutrality by 2040</em>. Miami University. <a href="https://miamioh.edu/news/2023/10/miami-university-commits-to-carbon-neutrality-by-2040.html" class="uri">https://miamioh.edu/news/2023/10/miami-university-commits-to-carbon-neutrality-by-2040.html</a></p>
+<p><em>Emissions from Commuting and University-Financed Travel | Climate Action Plan</em>. (2024). Miami University. <a href="https://miamioh.edu/about/sustainability/climate-action-plan/goals-targets/commuting-emissions-university-financed-travel.html" class="uri">https://miamioh.edu/about/sustainability/climate-action-plan/goals-targets/commuting-emissions-university-financed-travel.html</a></p>
+<p>Chao, M.-T., &amp; Lo, S.-H. (1985). A Bootstrap Method for Finite Population. <em>Sankhyā: The Indian Journal of Statistics, Series A (1961-2002)</em>, <em>47</em>(3), 399–405. <a href="http://www.jstor.org/stable/25050557" class="uri">http://www.jstor.org/stable/25050557</a></p>
+<p>R Core Team. (2024). R: A language and environment for statistical computing [R software]. R Foundation for Statistical Computing. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a></p>
+<p>Auguie, B. (2017). gridExtra: Miscellaneous functions for “Grid” graphics (R package version 2.3). <a href="https://CRAN.R-project.org/package=gridExtra" class="uri">https://CRAN.R-project.org/package=gridExtra</a></p>
+<p>Iannone, R., Cheng, J., Schloerke, B., Hughes, E., Lauer, A., Seo, J., Brevoort, K., &amp; Roy, O. (2024). gt: Easily create presentation-ready display tables (R package version 0.11.0). <a href="https://CRAN.R-project.org/package=gt" class="uri">https://CRAN.R-project.org/package=gt</a></p>
+<p>Mock, T. (2023). gtExtras: Extending ‘gt’ for beautiful HTML tables (Version 0.5.0) [R package]. CRAN. <a href="https://CRAN.R-project.org/package=gtExtras" class="uri">https://CRAN.R-project.org/package=gtExtras</a></p>
+<p>Wickham, H. (2016). ggplot2: Elegant graphics for data analysis [R package]. Springer-Verlag. <a href="https://ggplot2.tidyverse.org" class="uri">https://ggplot2.tidyverse.org</a></p>
+<p>Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M., Pedersen, T. L., Miller, E., Bache, S. M., Müller, K., Ooms, J., Robinson, D., Seidel, D. P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K., &amp; Yutani, H. (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686. <a href="https://doi.org/10.21105/joss.01686" class="uri">https://doi.org/10.21105/joss.01686</a></p>
+<p>Wickham, H., Vaughan, D., &amp; Girlich, M. (2024). tidyr: Tidy messy data (R package version 1.3.1). <a href="https://CRAN.R-project.org/package=tidyr" class="uri">https://CRAN.R-project.org/package=tidyr</a></p>
+<p>National Highway Traffic Safety Administration. (2023, June). Traffic safety facts: Motorcycles 2021 data (DOT HS 813 466). U.S. Department of Transportation. <a href="https://crashstats.nhtsa.dot.gov/Api/Public/ViewPublication/813466.pdf" class="uri">https://crashstats.nhtsa.dot.gov/Api/Public/ViewPublication/813466.pdf</a></p>
+<p>U.S. Department of Energy. (2024, January). Average fuel economy by major vehicle category. Alternative Fuels Data Center. <a href="https://afdc.energy.gov/data/10310" class="uri">https://afdc.energy.gov/data/10310</a></p>
+<p>U.S. Environmental Protection Agency. (n.d.). Greenhouse gas emissions from a typical passenger vehicle. EPA. <a href="https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle" class="uri">https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle</a></p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+    const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+    const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+    let newTheme = '';
+    if(darkModeDefault) {
+      newTheme = isAlternate ? baseTheme : alternateTheme;
+    } else {
+      newTheme = isAlternate ? alternateTheme : baseTheme;
+    }
+    const changeGiscusTheme = () => {
+      // From: https://github.com/giscus/giscus/issues/336
+      const sendMessage = (message) => {
+        const iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe) return;
+        iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+      }
+      sendMessage({
+        setConfig: {
+          theme: newTheme
+        }
+      });
+    }
+    const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+    if (isGiscussLoaded) {
+      changeGiscusTheme();
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  const darkModeDefault = false;
+  let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+    toggleGiscusIfUsed(toAlternate, darkModeDefault);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>© 2024 Thao Nguyen</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+<p>This website is built with <i class="fa-brands fa-github" aria-label="github"></i> and Quarto</p>
+</div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

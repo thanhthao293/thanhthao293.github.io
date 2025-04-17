@@ -1,0 +1,401 @@
+---
+title: "Effect of Plant Origin Compounds on Fungal Morphogenesis"
+date: 2024-11-06
+author: Thao Nguyen
+categories: [R, Statistical Analysis]
+output: 
+  html_document:
+    theme: journal
+    highlight: haddock
+execute:
+  echo: false
+  message: false
+  warning: false
+  fig-align: center
+---
+
+```{=html}
+<style type="text/css">
+
+h1.title {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+h4.author {
+  text-align: center;
+}
+
+</style>
+```
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = "center")
+```
+
+```{r}
+# run libraries
+library(dplyr)
+library(emmeans)
+library(ggplot2)
+library(gt)
+library(gtExtras)
+library(MASS)
+library(tidyr)
+```
+
+```{r}
+# read in data
+plant <- read.csv("C:/Users/thaon/OneDrive/miami university/sta 660/[Project 4] Plant Origin Compounds Effect on Fungal Morphogenesis/LeeDataFungalMorphogenesis.csv")
+
+# rename columns
+colnames(plant) <- c("treatment", "rep", "tube", "no_change", "GT_only", "PH_only",
+                     "Bud_only", "GT_PH", "GT_Bud", "PH_Bud", "mul_GTs")
+
+# recode treatment name
+plant <- plant %>%
+  mutate(
+    treatment = case_when(
+      treatment == "No Treatment (positive control)" ~ "Control",
+      treatment == "Whole Aloe arborescens Extract" ~ "Whole Extract",
+      treatment == "compound 'A' isolated from Aloe arborescens" ~ "Compound A",
+      treatment == "compound 'A-SA' from Sigma Aldrich" ~ "Compound A-SA",
+      treatment == "compound 'B' isolated from Aloe arborescens" ~ "Compound B",
+      treatment == "compound 'B-SA' from Sigma Aldrich" ~ "Compound B-SA",
+      treatment == "combination of A and B" ~ "A and B",
+      treatment == "combination of A-SA and B-SA" ~ "A-SA and B-SA",
+      TRUE ~ treatment),
+    treatment = factor(treatment, levels = unique(treatment)))
+```
+
+## **1. Introduction**
+
+The limited availability of safe and effective antifungal treatments makes the exploration of new compounds essential in combating fungal infections. *Candida albicans* is an opportunistic fungus known for its ability to switch between different forms, particularly from a yeast (single-cell) form to filamentous forms like hyphea and pseudohyphae, which enhances its invasiveness and virulence. This project aims to determine whether chemical compounds isolated from *Aloe arborescens* can inhibit the germination of *C. albicans* and reduce the formation of hyphae.
+
+To investigate this, researchers conducted morphogenesis assays, exposing a strain of *C. albicans* to seven treatments, including a 0.2-micron filtered *Aloe arborescens* extract, isolated compounds 'A' and 'B,' their commercial versions from Sigma-Aldrich ('A-SA' and 'B-SA'), and combinations of these compounds. In each treatment, 200 cells were observed in five replicates, and their forms were categorized based on the presence of hyphae (denoted GT), buds, or pseudohyphae (denoted PH).
+
+The primary hypotheses for this research are: (1) exposure to any of the seven treatments will significantly inhibit fungal germination and reduce hyphae formation; (2) treatments involving compound 'A' will be more effective than those involving compound 'B'; and (3) the 0.2-milcron filtered *Aloe arborescens* extract will show the greatest reduction in hyphae formation compared to the other treatments.
+
+The findings from this study could have important future implications for antimycotic treatments, potentially identifying new antifungal agents that can improve the options available for treating fungal infections.
+
+## **2. Methodology**
+
+### **2.1. Data**
+
+The dataset, provided by Dr. Marcia Lee from Miami University, contains 40 observations with 12 variables, each detailing the response of yeast cells under various treatments. The variables are described as follows:
+
+1.  `treatment`: Type of treatment applied to the yeast cells
+
+2.  `rep`: Replicate identifier for each treatment type
+
+3.  `tube`: Unique identifier for the tube containing the treated yeast cells
+
+4.  `no_change`: Count of cells (out of 200) that show no morphological changes
+
+5.  `GT_only`: Count of cells (out of 200) that develop only a hypha
+
+6.  `PH_only`: Count of cells (out of 200) that develop only a pseudohypha
+
+7.  `Bud_only`: Count of cells (out of 200) that develop only a bud
+
+8.  `GT_PH`: Count of cells (out of 200) that develop both hypha and pseudohypha
+
+9.  `GT_Bud`: Count of cells (out of 200) that develop both hypha and bud
+
+10. `PH_Bud`: Count of cells (out of 200) that develop both pseudohypha and bud
+
+11. `mul_GTs`: Count of cells (out of 200) that develop multiple hyphae
+
+For modelling purposes, an additional variable to be used as a response variable, called `GT_total`, was created. This variable sums the total number of cells that exhibit any form of hyphae for each treatment replicate, whether as a standalone effect or in combination with other morphologies.
+
+With this, the final dataset has 40 observations and 13 variables.
+
+### **2.2. Statistical Analysis**
+
+As the distribution of cells forming hyphae is not normally distributed, a Negative Binomial generalized linear model (GLM) with an offset of 200, $log(200)$, was modeled and has the following formula:
+
+$$
+log(X_{ij}) = \beta_0 + \beta_1 \times I(\text{trt}_1 = \text{Whole}) + \beta_2 \times I(\text{trt}_2 = \text{A}) + \ldots + \beta_7 \times I(\text{trt}_7 = \text{A-SA and B-SA}) \,+\,log(200)
+$$
+
+where $I(\text{trt}_i = i)$ is an indicator function that has a value of 1 if it is a particular treatment $i$ and otherwise has a value of 0 if it is not. $j \in \{1, \ldots, 5\}$ represents the replicate number.
+
+The motivation behind including an offset is that there is an upper limit of 200 cells for each treatment replicate, so the response variable is constrained and cannot increase indefinitely. The Negative Binomial distribution, however, assumes that counts can range from zero to infinity, which is problematic when there is actually an upper bound in existence. When counts become constrained near this upper limit, the distribution may become skewed, violating the assumptions of standard count models like the Poisson, which typically assume constant or proportional variance across all levels of the predictor variables.
+
+By introducing an offset, the maximum possible count of 200 is adjusted, which ensures that the response variable stays within a reasonable range. Mathematically, if the term is moved to the left side of the equation above, the left side becomes:
+
+$$
+log(X_{ij}) - log(200) = log(\frac{X_{ij}}{200})
+$$
+
+This effectively models the logarithm of the proportion of cells forming hyphae relative to the upper bound (200). As a result, the response variable is now constrained to a bounded range between 0 and 1, which is more appropriate when the counts have an upper limit. Thus, the formula for the Negative Binomial GLM with offset can be written as:
+
+$$
+log(\frac{X_{ij}}{200}) = \beta_0 + \beta_1 \times I(\text{trt}_1 = \text{Whole}) + \beta_2 \times I(\text{trt}_2 = \text{A}) + \ldots + \beta_7 \times I(\text{trt}_7 = \text{A-SA and B-SA})
+$$
+
+It is worth noting that an alternative to the Negative Binomial GLM is a Poisson GLM when working with count data. However, in the case of the provided data, the variance of the `GT_total` variable (2498.574) is much higher than the mean (44.2). This overdispersion violates a key assumption of the Poisson distribution, which requires the mean and variance to be equal, making the Poisson GLM inappropriate for this analysis. To correct for overdispersion, a quasi-Poisson GLM can be used here, but its lack of a log-likelihood makes it impossible to use any of the likelihood-based tools. As such, a Negative Binomial GLM would be preferred.
+
+Since the response variable is now the logarithm of the proportion of hyphae-forming cells (i.e., the number of hyphae-forming cells divided by the total cell count of 200 for each treatment replicate), comparisons between any two treatment groups will be the logarithm of the ratio of these proportions. Specifically, for two treatment groups, the difference in their log-transformed proportions represents the log of the ratio between the proportion of hyphae-forming cells in one treatment group relative to the proportion in the other. When comparisons are made, the ratio between the two treatment groups is obtained by exponentiating this logarithmic difference. This exponentiation restores the scale of the data back to a ratio of the proportions, which allows for a direct comparison of the relative effectiveness of the two treatments in promoting hyphae formation.
+
+Additionally, to answer the research questions, custom contrasts were applied to compare each pair of treatment groups. When multiple contrasts were tested simultaneously, the Benjamini-Hochberg procedure was used to adjust for the potential inflation of Type I error due to multiple contrasts. All statistical tests were conducted at a significance level of 0.05.
+
+### **2.3. Software**
+
+All data analysis steps were performed using R version 4.3.1, along with additional packages that will be cited in the reference section.
+
+## **3. Results**
+
+### **3.1. EDA**
+
+First, let's examine the average counts of morphological attributes across five replicates for each treatment level. Except for the unexposed control group, most of the 200 cells in each replicate for every treatment exhibits no significant changes in the development of any attributes such as hyphae, pseudohyphae, or buds. The control groups is the only group that demonstrates a remarkably high average of 170 cells developing hypha, much higher than the average of 44 cell counts in the compound B-SA group. The average counts of cells developing pseudohypha are around 30 for the treatments involving compound A, compound A-SA, and the combination of A-SA and B-SA. Regardless of the treatment type, very few cells form buds, and even fewer exhibit multiple attributes simultaneously, such as both hypha and pseudohypha. However, compared to other groups, the treatments with compound A and compound A-SA show a relatively higher occurence of cells developing both hypha and buds at the same time. It is not common to see cells developing multiple hyphae in this case.
+
+```{r}
+# calculate average count/proportion of 200 cells in each replicate with respective response
+avg <- plant %>%
+  group_by(treatment) %>%
+  summarize(no_change = paste(round(mean(no_change), 2), "\u00B1", round(sd(no_change), 2)),
+            GT_only = paste(round(mean(GT_only), 2), "\u00B1", round(sd(GT_only), 2)),
+            PH_only = paste(round(mean(PH_only), 2), "\u00B1", round(sd(PH_only), 2)),
+            Bud_only = paste(round(mean(Bud_only), 2), "\u00B1", round(sd(Bud_only), 2)),
+            GT_PH = paste(round(mean(GT_PH), 2), "\u00B1", round(sd(GT_PH), 2)),
+            GT_Bud = paste(round(mean(GT_Bud), 2), "\u00B1", round(sd(GT_Bud), 2)),
+            PH_Bud = paste(round(mean(PH_Bud), 2), "\u00B1", round(sd(PH_Bud), 2)),
+            mul_GTs = paste(round(mean(mul_GTs), 2), "\u00B1", round(sd(mul_GTs), 2)))
+
+avg %>%
+  gt(rowname_col = "treatment") %>%
+  gt_theme_espn() %>%
+  cols_align(align = "left", columns = treatment) %>%
+  cols_align(align = "center", columns = c(2:9)) %>%
+  cols_label(no_change = "No Change",
+             GT_only = "GT Only",
+             PH_only = "PH Only",
+             Bud_only = "Buds Only",
+             GT_PH = "GT & PH",
+             GT_Bud = "GT & Buds",
+             PH_Bud = "PH & Buds",
+             mul_GTs = "Multi GT") %>%
+  cols_width(treatment ~ px(125),
+             c(-1) ~ px(100)) %>%
+  tab_caption(caption = "Table 1. Average counts of cell morphologies by treatment") %>%
+  tab_style(style = cell_text(size = "12px"), locations = cells_body(everything())) %>%
+  opt_row_striping(row_striping = FALSE) 
+```
+
+So far, counts have been categorized into exclusive groups, such as cells showing no changes, developing only hypha, only pseudohypha, only buds, and combinations of these forms. However, the researchers are primarily interested in the formation of hypha. In other words, the development of hypha is the most significant, regardless of whether it occurs as a standalone attribute or in conjunction with other attributes. As a result, the counts of cells forming hyphae were consolidated into a single total column.
+
+```{r, fig.height = 6, fig.width = 10}
+# count the GT total for each treatment rep
+plant <- plant %>%
+  mutate(GT_total = rowSums(dplyr::select(., contains("GT"))))
+
+# calculate the mean GT count for each treatment
+means <- plant %>%
+  group_by(treatment) %>%
+  summarize(mean_GT_total = mean(GT_total, na.rm = TRUE))
+
+# plot GT total by treatment
+ggplot(plant, aes(x = treatment, y = GT_total, col = treatment)) +
+  geom_point() +
+  geom_point(data = means, aes(x = treatment, y = mean_GT_total), color = "black") +
+  labs(title = "Distribution of cell morphology counts by treatment",
+       subtitle = "Black points represent the average count for each treatment",
+       x = " ",
+       y = "Count") +
+  theme_bw() +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold", hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5, size = 10))
+```
+
+It can be seen that the control group exhibits a high number of cells forming hyphae, while the treatment groups display significantly fewer hyphae formations. This suggests that the treatments are effective in reducing hyphae development. Compounds A, B, A-SA, and B-SA appear similarly effective, although compound B-SA is slightly less effective. However, it is challenging to determine from this plot whether treatments with compound A are more effective than those with compound B in reducing hyphae formation. The whole Aloe arborescens extract seems to be the most effective at reducing hyphae development.
+
+The distribution of cells forming hyphae shows a right-skewed pattern. Consequently, tests assuming normality, such as one-way ANOVA, may not be suitable. Therefore, alternative methods for modeling the treatment effect on the total number of cells forming hyphae should be explored.
+
+```{r}
+ggplot(plant, aes(x = GT_total)) +
+  geom_histogram(aes(y = ..density..),  binwidth = 10, fill = "#3a90b3") +
+  geom_density(size = 0.5) +
+  labs(title = "Distribution of hyphae-forming cells by treatment replicate",
+       x = "Count",
+       y = "Density") +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold", hjust = 0.5))
+```
+
+### **3.2. Hypothesis Testing**
+
+```{r}
+# fit a negative binomial glm with offset
+offset_nb_glm <- glm.nb(GT_total ~ treatment, data = plant)
+
+# create custom contrasts
+ctrl <- c(1, 0, 0, 0, 0, 0, 0, 0)
+whole <- c(0, 1, 0, 0, 0, 0, 0, 0)
+A <- c(0, 0, 1, 0, 0, 0, 0, 0)
+B <- c(0, 0, 0, 1, 0, 0, 0, 0)
+A_SA <- c(0, 0, 0, 0, 1, 0, 0, 0)
+B_SA <- c(0, 0, 0, 0, 0, 1, 0, 0)
+A_B <- c(0, 0, 0, 0, 0, 0, 1, 0)
+ASA_BSA <- c(0, 0, 0, 0, 0, 0, 0, 1)
+
+# calculate estimated marginal means
+emm <- emmeans(offset_nb_glm, "treatment", type = "response")
+```
+
+#### 3.2.1. Any treatment will be able to reduce hyphae formation
+
+```{r}
+# test the first hypothesis
+h1_test <- contrast(
+  emm, 
+  method = list("Whole Extract - Control" = whole - ctrl,
+                "A - Control" = A - ctrl,
+                "B - Control" = B - ctrl,
+                "Synthetic A - Control" = A_SA - ctrl,
+                "Synthetic B - Control" = B_SA - ctrl,
+                "A and B - Control" = A_B - ctrl,
+                "Synethic A and Synthetic B - Control" = ASA_BSA - ctrl),
+  adjust="BH"
+  )
+
+# get the CIs
+h1_test_CI <- h1_test %>% confint()
+
+# combine and display the output
+cbind(
+  summary(h1_test) %>% dplyr::select(contrast, ratio, SE, p.value),
+  h1_test_CI %>% 
+    mutate(CI = paste0("(", round(asymp.LCL, 3), ", ", round(asymp.UCL, 3), ")")) %>%
+    dplyr::select(CI)
+) %>%
+  gt() %>%
+  gt_theme_espn() %>%
+  cols_align(align = "left", columns = contrast) %>%
+  cols_align(align = "center", columns = c(ratio, p.value, SE, CI)) %>%
+  cols_label(contrast = "Comparison",
+             p.value = "P-value",
+             CI = "95% CI") %>%
+  cols_width(vars(contrast) ~ px(300),
+             vars(ratio, SE, p.value) ~ px(100),
+             vars(CI) ~ px(150)) %>%
+  fmt_number(columns = c(ratio, SE, CI), decimals=3) %>%
+  fmt_number(columns=p.value, decimals=4) %>%
+  tab_caption(caption = "Table 2. Comparison between the control group and the treatment groups") %>%
+  opt_row_striping(row_striping = FALSE)
+```
+
+All comparisons are statistically significant ($p$-value $<$ 0.05), and since the ratio of each treatment group to the control group is less than 1, it indicates that all treatments lead to a reduction in hyphae formation compared to the control group.
+
+#### 3.2.2. Treaments involving compound A will be better than those involving compound B
+
+```{r}
+# take an average of the natural and synthetic versions
+overallA <- (A + A_SA) / 2
+overallB <- (B + B_SA) / 2
+
+# test the second hypothesis
+h2_test <- contrast(emm, method = list("Overall A - Overall B" = overallA - overallB))
+
+# get the CIs
+h2_test_CI <- h2_test %>% confint()
+
+# combine and display the output
+cbind(
+  summary(h2_test) %>% dplyr::select(contrast, ratio, SE, p.value),
+  h2_test_CI %>% 
+    mutate(CI = paste0("(", round(asymp.LCL, 3), ", ", round(asymp.UCL, 3), ")")) %>%
+    dplyr::select(CI)
+) %>%
+  gt() %>%
+  gt_theme_espn() %>%
+  cols_align(align = "left", columns = contrast) %>%
+  cols_align(align = "center", columns = c(ratio, p.value, SE, CI)) %>%
+  cols_label(contrast = "Comparison",
+             p.value = "P-value",
+             CI = "95% CI") %>%
+  cols_width(vars(contrast) ~ px(300),
+             vars(ratio, SE, p.value) ~ px(100),
+             vars(CI) ~ px(150)) %>%
+  fmt_number(columns= c(ratio, SE), decimals=3) %>%
+  fmt_number(columns=p.value, decimals=4) %>%
+  tab_caption(caption = "Table 3. Comparison between treatments containing compound A and compound B") %>%
+  opt_row_striping(row_striping = FALSE)
+```
+
+The comparison between treatments involving compound A and those involving compound B is not statistically significant ($p$-value $>$ 0.05), indicating that treatments with compound A are not more effective than those with compound B.
+
+#### 3.2.3. The 0.2 micron filtered Aloe arborescens treatment will be the most effective at reducing hyphae formation
+
+```{r}
+# test the third contrast
+h3_test <- contrast(
+  emm, 
+  method = list("A - Whole Extract" = A - whole,
+                "B - Whole Extract" = B - whole,
+                "Synthetic A - Whole Extract" = A_SA - whole,
+                "Synthetic B - Whole Extract" = B_SA - whole,
+                "A and B - Whole Extract" = A_B - whole,
+                "Synethic A and Synthetic B - Whole Extract" = ASA_BSA - whole),
+  adjust="BH"
+  )
+
+# get the CIs
+h3_test_CI <- h3_test %>% confint()
+
+# combine and display the output
+cbind(
+  summary(h3_test) %>% dplyr::select(contrast, ratio, SE, p.value),
+  h3_test_CI %>% 
+    mutate(CI = paste0("(", round(asymp.LCL, 3), ", ", round(asymp.UCL, 3), ")")) %>%
+    dplyr::select(CI)
+) %>%
+  gt() %>%
+  gt_theme_espn() %>%
+  cols_align(align = "left", columns = contrast) %>%
+  cols_align(align = "center", columns = c(ratio, p.value, SE, CI)) %>%
+  cols_label(contrast = "Comparison",
+             p.value = "P-value", 
+             CI = "95% CI") %>%
+  cols_width(vars(contrast) ~ px(350),
+             vars(ratio) ~ px(100),
+             vars(p.value) ~ px(100)) %>%
+  fmt_number(columns = c(ratio, SE), decimals=3) %>%
+  fmt_number(columns=p.value, decimals=4) %>%
+  tab_caption(caption = "Table 4. Comparisons between whole extract treatment group and the remaining treatment groups") %>%
+  opt_row_striping(row_striping = FALSE)
+```
+
+Once again, all tests are statistically significant ($p$-value $<$ 0.05). Since all of the ratios are bigger than 1, this suggest that the 0.2-micron filtered Aloe arborescens extract is the most effective treatment among the seven treatments tested. From the estimated mean ratios, it appears that the second and third effective compounds following the whole extract are combination of compound A and B (3.233) and combination of synthetic A and synthetic B (3.567).
+
+The results also show that using a combination of both compound A and compound B, regardless of whether they are natural or synthetic, is more effective than using either the natural or synthetic form of the compounds individually.
+
+## **4. Conclusion**
+
+After perfoming pairwise contrasts, it can be concluded that all of the significantly inhibit the formation of hyphae. Among them, the 0.2 micron filtered Aloe arborescens extract is found to be the most effective. When comparing treatments containing compound A to those containing compound B, no significant difference in the effectiveness is observed between the two groups.
+
+## **5. References**
+
+R Core Team (2023). *R: A Language and Environment for Statistical Computing*. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
+
+Wickham H, François R, Henry L, Müller K, Vaughan D (2023). *dplyr: A Grammar of Data Manipulation*. R package version 1.1.3, <https://CRAN.R-project.org/package=dplyr>.
+
+Lenth R (2024). *emmeans: Estimated Marginal Means, aka Least-Squares Means*. R package version 1.10.4, <https://CRAN.R-project.org/package=emmeans>.
+
+H. Wickham. ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York, 2016.
+
+Iannone R, Cheng J, Schloerke B, Hughes E, Lauer A, Seo J (2024). *gt: Easily Create Presentation-Ready Display Tables*. R package version 0.10.1, <https://CRAN.R-project.org/package=gt>.
+
+Mock T (2023). *gtExtras: Extending 'gt' for Beautiful HTML Tables*. R package version 0.5.0, <https://CRAN.R-project.org/package=gtExtras>.
+
+Venables, W. N. & Ripley, B. D. (2002) Modern Applied Statistics with S. Fourth Edition. Springer, New York. ISBN 0-387-95457-0
+
+Wickham H, Vaughan D, Girlich M (2023). *tidyr: Tidy Messy Data*. R package version 1.3.0, <https://CRAN.R-project.org/package=tidyr>.
+
+Negative Binomial Regression \| R Data Analysis Examples. (n.d.). Stats.oarc.ucla.edu. <https://stats.oarc.ucla.edu/r/dae/negative-binomial-regression/>
+
+Muldoon, A. (2019, April 15). Custom contrasts in Emmeans. Very statisticious. <https://aosmith.rbind.io/2019/04/15/custom-contrasts-emmeans/>
+
+Wikimedia Foundation. (2024, November 5). False discovery rate. Wikipedia. <https://en.wikipedia.org/wiki/False_discovery_rate>

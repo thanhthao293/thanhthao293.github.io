@@ -1,19 +1,42 @@
 project:
   type: website
-
+  output-dir: docs
+  
 website:
-  title: "thanhthao293.github.io"
+  #title: "Thao Nguyen"
+  favicon: logo.png
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
-
+      - text: "Home"
+        href: index.qmd
+    right:
+      - text: "Projects"
+        href: projects.qmd
+      - text: "Resume"
+        href: Thao Nguyen Resume.pdf
+        target: _blank
+      - icon: linkedin
+        href: https://www.linkedin.com/in/thao-nguyen-5b1088219/
+        target: _blank
+      - icon: github
+        href: https://github.com/thanhthao293
+        target: _blank
+  search: false      
+  page-footer:
+    left: © 2024 Thao Nguyen
+    right: This website is built with {{< fa brands github >}} and Quarto
+    
 format:
   html:
-    theme: cosmo
-    css: styles.css
+    theme:
+      light: [journal, light_theme.scss]
+      dark: [journal, dark_theme.scss]
     toc: true
+    toc-title: Table of Contents
+    toc-location: left
+    sidebar: false
+    page-layout: full
+    html-table-processing: none
 
 editor: visual
 

@@ -1,0 +1,52 @@
+/*-- scss:defaults --*/
+
+// colors ----------------------------------------------------------------------
+
+$air-superiority-blue: #7FA1C3;
+$seasalt: #F9F7F7;
+$snow: #FAF3F3;
+$puce: #DA7F8F;
+$columbia-blue: #B9D7EA;
+
+// base document colors
+$navbar-bg: $air-superiority-blue; // navbar
+$navbar-fg: $snow; // navbar foreground elements
+$footer-bg: $air-superiority-blue; // footer background color
+$footer-fg: $snow; // footer foreground elements' color
+$page-bg: $snow;
+
+// inline code
+$code-bg: $seasalt; // inline code background color
+$code-color: $puce; // inline code text color
+
+// navigation ------------------------------------------------------------------
+
+/*
+.navbar {
+  .nav-link {
+    &.active {
+      color: $snow !important;
+    }
+  }
+}
+*/
+.navbar {
+  .nav-link {
+    color: white; // default link color
+
+    &:hover { // link is underlined when hovered over
+      color: white;
+      text-decoration: underline;
+    }
+
+    &.active {
+      color: white !important; // current active page is white 
+      font-weight: bold;
+
+      &:hover { 
+        text-decoration: underline;
+      }
+    }
+  }
+}
+

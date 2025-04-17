@@ -1,0 +1,792 @@
+---
+title: "Miami University Annual Mileage Estimation"
+date: 2024-10-23
+author: Thao Nguyen, Christina Bao
+categories: [R, Statistical Analysis]
+output: 
+  html:
+    highlight: haddock
+    theme: journal
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = TRUE )
+```
+
+```{r}
+# load the libraries
+library(tidyverse)
+library(gt)
+library(gtExtras)
+library(ggplot2)
+library(tidyr)
+```
+
+```{r}
+# read in data
+stu <- read.csv("C:/Users/thaon/OneDrive/miami university/sta 660/[Project 3] MU Annual Commuting Mileage Estimation/student_distances_90miles_no_ address.csv")
+emp <- read.csv("C:/Users/thaon/OneDrive/miami university/sta 660/[Project 3] MU Annual Commuting Mileage Estimation/employee_distances_90miles_no_ address.csv")
+```
+
+## **1. Introduction**
+
+Growing impacts of climate change have driven many worldwide companies and organizations to commit to carbon neutrality targets. Miami University (MU) is no exception, having submitted its Miami 2040 Climate Action Plan in May 2024 with the aim of achieving carbon neutrality on its Oxford campus by 2040. This plan builds on over a decade of commitment, as MU has been taking steps to reduce its carbon footprint since 2008. A significant component of this initiative is reducing emissions generated from employee and student commuting. MU has set ambitious targets, including reducing student commuting emissions by 50% by 2030 and 90% by 2040, while faculty and staff commuting emissions are also slated for a 90% reduction by 2040.
+
+This project, in line with President Crawford and the University Climate Action Plan, aims to analyze commuting patterns among MU employees and students. By estimating weekly and yearly commuting mileage and gasoline consumption for fiscal year 2023, the project aims to provide actionable insights intro transportation-related emissions at MU and support the institution's broader sustainability goals.
+
+## **2. Methodology**
+
+### **2.1. Data**
+
+The project utilizes two datasets, one for students and one for employees, both sourced from an optional survey included with the on-campus parking permit application. For fiscal year 2023, a total of 3,937 permits were issued for staff/faculty and 3,501 for students (537 of which were off-campus residents). This survey is designed to assess commuting patterns based on respondents' home addresses, commute frequency, and the modes of transportation they use. The mileages were calculated using GIS based on the provided addresses. Those whose home addresses are more than 45 miles from campus (90 miles in a round trip) were removed from the data.
+
+The employee dataset contains 1976 rows and 15 variables, which are described as follows:
+
+1.  `DESIGNATION`: The position or role of the person who completed the survey
+2.  `commute_days_fall_spring`: Number of days per week the employee commutes to the Oxford campus during the Fall/Spring semesters
+3.  `remote_days_fall_spring`: Number of days per week the employee works remotely during the Fall/Spring semesters
+4.  `commute_days_summer_jterm`: Number of days per week the employee commutes to the Oxford campus during Summer/J-term
+5.  `remote_days_summer_jterm`: Number of days per week the employee works remotely during Summer/J-term
+6.  `commute_gaspowered_100pct_time`: Whether the employee exclusively commutes using gas-powered vehicles
+7.  `drive_gas`: Percentage of total commuting time the employee uses a gas, hybrid electric, or diesel vehicle
+8.  `drive_electric`: Percentage of total commuting time the employee uses an electric vehicle
+9.  `walk`: Percentage of total commuting time the employee walks to the Oxford campus
+10. `bicycle`: Percentage of total commuting time the employee uses a bicycle or other non-motorized means
+11. `BCRTAbus`: Percentage of total commuting time the employee uses the BCRTA Bus
+12. `carpool_as_passenger`: Percentage of total commuting time the employee vanpools or carpools as a passenger
+13. `drive_motorcycle`: Percentage of total commuting time the employee drives a motorcycle, scooter, or moped
+14. `other`: Percentage of total commuting time the employee uses other transportation methods not listed above
+15. `daily_miles_one_way`: The one-way distance, in miles, the employee travels to the Oxford campus each day
+
+The student dataset contains 319 observation and 14 variables, which are described as follows:
+
+1.  `DESIGNATION`: The position or role of the person who completed the survey
+2.  `live_on_campus_in_2021_2022`: Whether the student lived on campus in the 2021-2022 academic year
+3.  `commute_days_fall_spring`: Number of days per week the student commutes to the Oxford campus during the Fall/Spring semesters
+4.  `commute_days_jterm`: Number of days per week the student commutes to the Oxford campus during J-term
+5.  `commute_days_summer`: Number of days per week the student commutes to the Oxford campus during Summer
+6.  `walk`: Percentage of total commuting time the student walks to the Oxford campus
+7.  `drive_gas`: Percentage of total commuting time the student uses a gas, hybrid electric, or diesel vehicle
+8.  `drive_electric`: Percentage of total commuting time the student uses an electric vehicle
+9.  `bicycle`: Percentage of total commuting time the student uses a bicycle or other non-motorized transportation
+10. `BCRTAbus`: Percentage of total commuting time the student uses the BCRTA bus
+11. `carpool_as_passenger`: Percentage of total commuting time the student carpools or vanpools as a passenger
+12. `drive_motorcycle`: Percentage of total commuting time the student uses a motorcycle, scooter, or moped
+13. `other`: Percentage of total commuting time the student uses other transportation methods not listed above
+14. `daily_miles_one_way`: The one-way distance, in miles, the student travels to the Oxford campus each day
+
+Pre-processing is necessary to address data quality issues identified in the survey responses. Since this project focuses on commuting to the Oxford campus, observations from students and employees who reported zero weekly commuting were excluded from the analysis, even if they reported travel mileage. In the original survey, respondents were asked to report the percentage of total time they use each mode of transportation. This led to inconsistencies, as some respondents interpreted the question differently, resulting in total percentages that did not sum to 100%. Specifically, in the student dataset, 13 rows had totals either exceeding or falling short of 100%, with 4 rows reporting 0%. Similarly, in the employee dataset, 22 rows did not total 100%, with 4 also reporting 0%. To resolve this, for rows where the total percentage was not 0%, the percentages for each mode of transportation were rescaled proportionally to sum to 100%.
+
+After rescaling, 1 row in the student data and 3 rows in the employee data still did not sum to 100%, as these respondents did not provide specific ratings for vehicle usage. While this does not impact mileage estimation, it may introduce uncertainty when estimating gas usage. Consequently, these observations were excluded from gas mileage estimates. Additionally, 7 rows in the employee data lack information on vehicle breakdown and whether gas-powered commuting occurred 100% of the time. Although these rows can still be used to estimate mileage due to known commuting days, again, they were excluded from gas mileage estimates due to insufficient data.
+
+Another issue found in the employee dataset involved discrepancies between the respondents’ answers. Some employees indicated they did not always commute using gas-powered vehicles but later reported using gas-powered vehicles 100% of the time. In such cases, their initial response was corrected to "Yes." For respondents who answered "Yes" but did not provide a breakdown of transportation modes, their `drive_gas` percentage was set to 100%, and all other transportation modes were set to 0%.
+
+In the employee data, there are columns for remote days and commute days. However, in some instances, the sum of remote and commute days exceeds 5, which may indicate either a misunderstanding of the survey or a hybrid working arrangement. Given that the survey primarily focuses on commuting, only the commute days column was used for analysis.
+
+```{r}
+# remove students whose commute days in fall, spring, jterm, and summer are 0
+stu_n <- stu %>% 
+  filter(!(commute_days_fall_spring == 0 & commute_days_jterm == 0 & commute_days_summer == 0))
+
+# remove employees whose commute days in fall, spring, jterm, and summer are 0
+emp_n <- emp %>%
+  filter(!(commute_days_fall_spring == 0 & commute_days_summer_jterm == 0))
+```
+
+```{r}
+# write a function to rescale the individual percentages
+rescale_pcts <- function(data, cols) {
+  
+  data[, cols] <- t(apply(data[, cols], 1, function(row) {
+    # if any columns are NA, don't make changes to the columns
+    if (any(is.na(row))) {
+      return(row) 
+    } else {
+      # sum the individual percentages
+      row_sum <- sum(row, na.rm = TRUE)
+      if (row_sum != 0 & row_sum != 100) {
+        return(round(row / row_sum * 100, 2))
+      } else {
+        return(row)
+      }
+    }
+  }))
+  
+  # update the total_perc column to reflect the new total
+  data$total_perc <- apply(data[, cols], 1, function(row) {
+    if (any(is.na(row))) {
+      return(NA)
+    } else {
+      return(round(sum(row, na.rm = TRUE), 0))  
+    }
+  })
+  
+  return(data)
+}
+
+# apply the function
+stu_n <- rescale_pcts(stu_n, 6:13)
+emp_n <- rescale_pcts(emp_n, 7:14) %>%
+  mutate(
+    # if `commute_gaspowered_100pct_of_time` = yes and drive_gas is NA, set drive_gas to 100,
+    drive_gas = ifelse(commute_gaspowered_100pct_of_time=="Yes" & is.na(drive_gas), 100, drive_gas),
+    
+    # and set other variables to 0
+    across(8:14, ~ ifelse(drive_gas == 100, 0, .)),
+    
+    # change the `commute_gaspowered_100pct_of_time` to yes for obs having `drive_gas` = 100      
+    commute_gaspowered_100pct_of_time = ifelse(drive_gas == 100 & commute_gaspowered_100pct_of_time == "No",
+                                               "Yes", commute_gaspowered_100pct_of_time),
+    
+    # check total percentage again
+    total_perc = walk + drive_gas + drive_electric + bicycle + BCRTAbus + 
+                 carpool_as_passenger + drive_motorcycle + other
+  )
+```
+
+### **2.2. Statistical Analysis**
+
+The survey included various modes of travel: driving (gas, hybrid electric, or diesel-powered vehicles), driving (plug-in electric vehicles), walking, bicycling or other non-motorized means, BCRTA bus, vanpooling/carpooling as a passenger, motorcycle, scooter or moped, and other. Since walking is not typically considered a commuting method, it was excluded from the total commuting percentage by subtracting the proportion of walking days from the total commute days to calculate adjusted commute days per week. When calculating weekly commuting mileage, it's essential to account for the different number of weeks in a term. As such, each individual's commuting frequency in a week was adjusted using a weighted average of the number of weeks across all terms (Fall, Spring, Summer, and J-term). The weekly commuting mileage for any respondent was then by calculated by multiplying the daily one-way miles traveled by 2, then by the adjusted number of days they commute in a week. To get an yearly estimate, there was no need to adjust for the commuting frequency in a week. It was calculated as the sum of the number of miles a person travels each Fall, Spring, Summer, and J-term semester, which was the daily one-way miles traveled times 2 times the number of days they travel in a week and times the number of weeks in a semester. There are 30 weeks in the Spring and Fall terms, excluding breaks for Fall, Thanksgiving, and Spring. The J-term is typically 4 weeks, while the Summer term is 12 weeks long. It is assumed that employees and students commute consistently, including in the finals week. The same procedure applies to both student data and employee data. To get a population estimate, the sum of miles for the sample was divided by the sample size and then multiplied by the population size. For the student data, the population of 537 off-campus students was used instead of 3,501 students because the sample student data only concerns off-campus students, so it would be more reasonable to try to generalize this to a population of students that also live off-campus.
+
+For estimating gasoline usage, only gas-powered vehicles and motorcycles were included in calculations. It is assumed the stakeholders would be more interested in personal vehicle gas consumption, so public types of commuting such as BCRTA buses or carpooling were not considered, even if they also use gas. Additionally, the nature of these types of transportation poses significant challenges to estimating gasoline usage with the limited information available: It is unknown if a person carpools in another person's car that also commutes to MU (which would double count towards the estimate) or just drops them off at MU (which would not count towards the gasoline estimate). There is no way to know about this from the survey. Meanwhile, buses operate independently of passenger numbers and are available to everyone, so calculating gasoline usage for buses separately would be more accurate. Even then, lack of information such as how many buses are deployed at a time, bus model, or bus route (can be roughly traced and calculated) makes it difficult to give an accurate estimate (It was later revealed that the BCRTA buses are not included in MU's carbon footprint as they don't operate under MU). The procedure for estimating weekly and yearly gasoline usage is the same as estimating commuting mileage for both students and employees, but to determine students' and employees' mileage for gas-powered vehicles and motorcycles, miles traveled need to be converted to gallons. According to the U.S. Department of Energy, the average miles per gallon (MPG) for motorcycles is 44, and for cars, it is 24.4. Moreover, the US Environmental Protection Agency estimates that each gallon of gasoline produces approximately 8,887 grams of $CO_2$. To convert gasoline usage to metric tons of $CO_2$, the total $CO_2$ emissions in grams was divided by 1,000,000.
+
+While not required, it is crucial to know how the estimates may vary. To obtain standard errors for the population estimates, a bootstrapping method proposed by Min-Te Chao and Shaw-Hwa Lo (1985) was employed, which is suitable when the population size is known. This method calculates the ratio of the population size to the sample size, defined as $k$. A bootstrap population is then created by repeating each sample from the original data $k$ times, resulting in a larger dataset. Random samples are taken from this new dataset to form the bootstrap samples. By repeatedly sampling and calculating different population total estimates from these resamples, the standard error of the population total can be determined.
+
+If $k$ is an integer, the bootstrapping procedure is implemented as described. However, if $k$ is not an integer, the nearest integers below and above $k$ are identified, referred to as $k_1$ and $k_2$. Bootstrap populations are created for both $k_1$ and $k_2$, denoted as $N_1$ and $N_2$. During each bootstrapping round, either $N_1$ or $N_2$ is randomly selected as the bootstrap sample, with the selection probability weighted by how close $k$ is to $k_1$ or $k_2$.
+
+### **2.3. Software**
+
+All data analysis tasks were performed using R version 4.3.1, along with additional packages, which are cited in the reference section.
+
+## **3. Results**
+
+### **3.1. EDA**
+
+First, let's examine the distribution of usage frequency in percentage for each vehicle type. Among students, the data reveals a predominant reliance on gas-powered vehicles, which is expected given that this information is collected during parking permit applications on campus. Interestingly, there is also a notable frequency of students walking to campus, surpassing the usage of other transportation modes such as bicycles, buses, and carpooling.
+
+```{r, fig.width=8}
+stu_long <- stu_n %>%
+  rename(Bus = BCRTAbus,
+         Bicycle = bicycle,
+         Carpooling = carpool_as_passenger,
+         `Electrical Vehicle` = drive_electric,
+         `Gas-powered Vehicle` = drive_gas,
+         Motorcycle = drive_motorcycle,
+         Other = other,
+         Walking = walk) %>%
+  select(c(6:13)) %>%
+  pivot_longer(cols = everything(), names_to = "Vehicle", values_to = "Percentage") 
+
+ggplot(stu_long, aes(x = Percentage, fill = Vehicle)) +
+  geom_histogram(binwidth = 10, position = "dodge", color = "black") +
+  facet_wrap(~ Vehicle, ncol = 4, nrow = 2) +
+  labs(title = "Histogram of Vehicle Mode Usage for Commuting by Students",
+       x = "Percentage",
+       y = "Frequency") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold", hjust = 0.5))
+```
+
+The same pattern can be observed for data related to employees where gas-powered vehicles is the most common and also the only means of transportation. The variability in transportation choices is limited, as employees typically have more housing options than students, allowing them to live farther from the main campus. Consequently, gas-powered vehicles tend to be the most practical choice for commuting. Additionally, the low usage of electric vehicles can be attributed to their relative scarcity compared to gas-powered vehicles, as well as the lack of supporting infrastructure in the Oxford area.
+
+```{r, fig.width=8}
+emp_long <- emp_n %>%
+  rename(Bus = BCRTAbus,
+         Bicycle = bicycle,
+         Carpooling = carpool_as_passenger,
+         `Electrical Vehicle` = drive_electric,
+         `Gas-powered Vehicle` = drive_gas,
+         Motorcycle = drive_motorcycle,
+         Other = other,
+         Walking = walk) %>%
+  select(c(7:14)) %>%
+  pivot_longer(cols = everything(), names_to = "Vehicle", values_to = "Percentage") 
+
+
+ggplot(emp_long, aes(x = Percentage, fill = Vehicle)) +
+  geom_histogram(binwidth = 10, position = "dodge", color = "black") +
+  facet_wrap(~ Vehicle, ncol = 4, nrow = 2) +
+  labs(title = "Histogram of Vehicle Mode Usage for Commuting by Employees",
+       x = "Percentage",
+       y = "Frequency") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold", hjust = 0.5))
+```
+
+Looking at the distribution of daily miles driven one way, it can be seen that most people are within 5 miles of the campus. Fewer people travel more than 10 miles per day. It's notable that the daily travel mileage distributions for students and employees are quite similar.
+
+```{r}
+daily_miles <- rbind(
+  stu_n %>% select(c(1, 14)) %>% mutate(DESIGNATION = "Student"), 
+  emp_n %>% select(c(1, 15))) %>%
+  filter(DESIGNATION %in% c("Faculty", "Other", "Staff", "Student"))
+
+ggplot(daily_miles, aes(x = daily_miles_one_way, color = DESIGNATION)) +
+  geom_density() +
+  labs(title = "Distribution of One Way Daily Miles Traveled",
+       x = "Daily Miles (One way)",
+       y = "Density",
+       color = "Designation") +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
+```
+
+### **3.2. Estimate Construction**
+
+#### **3.2.1 Breakdown of weekly and annual commuting mileage by demographics**
+
+```{r}
+# write a function to estimate population standard error
+bootstrap <- function(data, N, n, k1, k2, alpha) {
+  
+  # number of bootstrap resamples
+  B <- 1000
+  
+  # create a dataframe to store results for each run
+  results <- data.frame(run = 1:B, 
+                        k = numeric(B),
+                        sample_mean = numeric(B), 
+                        pop_miles = numeric(B))
+
+  for (i in 1:B) {
+    
+    # randomly choose between k1 and k2 based on alpha
+    chosen_k <- if (runif(1) < alpha) k1 else k2
+
+    # create bootstrap population by multiplying available sample data by k
+    bootstrap_pop <- rep(data, times = chosen_k)
+
+    # sample n observations without replacement from the bootstrap population
+    bootstrap_sample <- sample(bootstrap_pop, size = n, replace = FALSE)
+
+    # calculate estimates
+    sample_mean <- mean(bootstrap_sample) 
+    total_pop_miles <- sample_mean*N
+
+    # store results
+    results[i, ] <- c(i, chosen_k, round(sample_mean, 3), round(total_pop_miles, 3))
+  }
+  
+  # return a dataframe with information for each run
+  return(results)
+}
+```
+
+```{r}
+# calculate weekly and annual mileage for employees
+week_yr_emp <- emp_n %>%
+  mutate(
+    # account for observations with NAs in vehicle breakdown,
+      # which cause all of the time-related calculations to be NAs
+    walk = if_else(is.na(walk), 0, walk),
+         
+    # subtract walking proportion and adjust for actual commute days
+    walk_fraction = walk / 100, 
+    adjusted_commute_days_fall_spring = commute_days_fall_spring * (1 - walk_fraction),
+    adjusted_commute_days_summer_jterm = commute_days_summer_jterm * (1 - walk_fraction), 
+         
+    # standardize (weight) commute days in a week across both terms
+    weighted_commute_days = (adjusted_commute_days_fall_spring * 30 + 
+                             adjusted_commute_days_summer_jterm * (4 + 12)) / (30 + 4 + 12),
+      
+    # calculate standardized weekly estimates across both terms
+    weekly_miles_combined = daily_miles_one_way * 2 * weighted_commute_days,
+    
+    # calculate weekly miles traveled in a semester
+    wkmiles_fall_spring = daily_miles_one_way * 2 * adjusted_commute_days_fall_spring,
+    wkmiles_summer_jterm = daily_miles_one_way * 2 * adjusted_commute_days_summer_jterm,
+         
+    # calculate yearly estimate
+    yearly_miles = (wkmiles_fall_spring * 30) + (wkmiles_summer_jterm * (4 + 12))
+  ) %>%
+  select(-c(2:14, 16:17)) %>%
+  mutate_if(is.numeric, round, 3)
+
+
+# calculate population standard error for employees
+
+# initialize variables
+emp_miles_weekly <- week_yr_emp$weekly_miles_combined # individual weekly estimates
+emp_miles_yearly <- week_yr_emp$yearly_miles # individual yearly estimates
+N_emp <- 3937  # population
+n <- nrow(week_yr_emp) # sample size
+k <- round(N_emp/n, 3) # calculate k
+k1 <- floor(k) # lower nearest integer
+k2 <- ceiling(k) # upper nearest integer
+alpha <- k2 - k # give more weight to k1 because k is very close to 2
+
+# perform bootstrapping
+set.seed(123)
+weekly_emp_miles_boot <- bootstrap(emp_miles_weekly, N_emp, n, k1, k2, alpha) # weekly estimate
+yearly_emp_miles_boot <- bootstrap(emp_miles_yearly, N_emp, n, k1, k2, alpha) # yearly estimate
+```
+
+```{r}
+# calculate weekly and annual mileage for students
+week_yr_stu <- stu_n %>%
+  mutate(
+    # subtract walking proportion and adjust for actual commute days
+    walk_fraction = walk / 100,  
+    adjusted_commute_days_fall_spring = commute_days_fall_spring * (1 - walk_fraction),
+    adjusted_commute_days_jterm = commute_days_jterm * (1 - walk_fraction), 
+    adjusted_commute_days_summer = commute_days_summer * (1 - walk_fraction),
+    
+    # standardize (weight) commute days in a week across both terms
+    weighted_commute_days = (adjusted_commute_days_fall_spring * 30 + adjusted_commute_days_jterm * 4 + 
+                             adjusted_commute_days_summer * 12) / (30 + 4 + 12),  
+        
+    # calculate standardized weekly estimates across both terms
+    weekly_miles_combined = daily_miles_one_way * 2 * weighted_commute_days,
+    
+    # calculate weekly miles traveled in a semester
+    wkmiles_fall_spring = daily_miles_one_way * 2 * adjusted_commute_days_fall_spring,
+    wkmiles_jterm = daily_miles_one_way * 2 * adjusted_commute_days_jterm,       
+    wkmiles_summer = daily_miles_one_way * 2 * adjusted_commute_days_summer,
+        
+    # calculate yearly estimate
+    yearly_miles = (wkmiles_fall_spring * 30) + (wkmiles_jterm * 4) + (wkmiles_summer * 12)
+    ) %>%
+  select(-c(2:13, 15:16)) %>%
+  mutate_if(is.numeric, round, 3)
+
+
+# calculate population standard error for employees
+
+# initialize variables
+stu_miles_weekly <- week_yr_stu$weekly_miles_combined # individual weekly estimates
+stu_miles_yearly <- week_yr_stu$yearly_miles # individual yearly estimates
+N_stu <- 537  # population
+n <- nrow(week_yr_stu) # sample size
+k <- round(N_stu/n, 3) # calculate k
+k1 <- floor(k) # lower nearest integer
+k2 <- ceiling(k) # upper nearest integer
+alpha <- k2 - k # give more weight to k2 because k is very close to 2
+
+# perform bootstrapping
+set.seed(123)
+weekly_stu_miles_boot <- bootstrap(stu_miles_weekly, N_stu, n, k1, k2, alpha) # weekly estimate
+yearly_stu_miles_boot <- bootstrap(stu_miles_yearly, N_stu, n, k1, k2, alpha) # yearly estimate
+```
+
+```{r}
+# output the results
+weekly_pop <- c(mean(week_yr_emp$weekly_miles_combined)*N_emp, 
+                mean(week_yr_stu$weekly_miles_combined)*N_stu)
+
+weekly_se <- c(sd(weekly_emp_miles_boot$pop_miles), 
+               sd(weekly_stu_miles_boot$pop_miles))
+
+yearly_pop <- c(mean(week_yr_emp$yearly_miles)*N_emp,
+                mean(week_yr_stu$yearly_miles)*N_stu)
+
+yearly_se <- c(sd(yearly_emp_miles_boot$pop_miles), 
+               sd(yearly_stu_miles_boot$pop_miles))
+
+
+miles_se <- data.frame(pop_weekly_miles = weekly_pop, 
+                       pop_weekly_se = weekly_se,
+                       pop_yearly_miles = yearly_pop,
+                       pop_yearly_se = yearly_se)
+
+rownames(miles_se) <- c("Employee", "Student")
+
+miles_se %>%
+  gt(rownames_to_stub=TRUE) %>%
+  gt_theme_espn() %>%
+  cols_align(align="center", columns = everything()) %>%
+  cols_label(pop_weekly_miles = "Total Miles",
+             pop_weekly_se = "SE",
+             pop_yearly_miles = "Total Miles",
+             pop_yearly_se = "SE") %>%
+  fmt_number(columns = vars(pop_weekly_miles, pop_weekly_se,
+                            pop_yearly_miles, pop_yearly_se), 
+             sep_mark = ",") %>%
+  tab_caption(caption = md("**Table 1. Weekly and Annual Mileage Estimate by Demographics**")) %>%
+  #tab_style(style = list(cell_text(size="20px")), locations = cells_title("title")) %>%
+  tab_spanner(label = "Weekly", columns = vars(pop_weekly_miles, pop_weekly_se), id="weekly") %>%
+  tab_spanner(label = "Yearly", columns = vars(pop_yearly_miles, pop_yearly_se), id="yearly") %>%
+  tab_style(style = cell_text(weight="bold"), locations = cells_column_spanners(spanners="weekly")) %>%
+  tab_style(style = cell_text(weight="bold"), locations = cells_column_spanners(spanners="yearly")) %>%
+  tab_options(table.width = px(800)) %>%
+  opt_row_striping(row_striping = FALSE)
+```
+
+It can be seen that employees generally travel more than students, with weekly travel nearly 10 times greater and yearly travel about 15 times higher. This difference is understandable given that there are approximately 3,937 employees with parking permits compared to 537 off-campus students with parking permits. With around 7 times more employees than students and yet more than 10 times higher travelling distances, it is reasonable to say that employees have higher travel mileage than students do.
+
+#### **3.2.2. Breakdown of weekly and annual commuting gas usage by demographics**
+
+```{r}
+# remove observations where specific breakdown is not known/ambiguous (10 obs)
+emp_n <- emp_n %>% filter(!(total_perc == 0 | is.na(total_perc)))
+
+# calculate weekly and annual gasoline usage for employees
+wk_yr_emp_gas <- emp_n %>%
+  mutate(
+    # separate fractions for gas and motorcycle
+    gas_fraction = drive_gas / 100,
+    moto_fraction = drive_motorcycle / 100,
+    
+    # adjust commute days separately for gas and motorcycle in fall/spring and summer/jterm
+    adjusted_commute_days_fall_spring_gas = commute_days_fall_spring * gas_fraction,
+    adjusted_commute_days_fall_spring_moto = commute_days_fall_spring * moto_fraction,
+    adjusted_commute_days_summer_jterm_gas = commute_days_summer_jterm * gas_fraction,
+    adjusted_commute_days_summer_jterm_moto = commute_days_summer_jterm * moto_fraction,
+    
+    # weekly miles for gas and motorcycle separately
+    wkmiles_fall_spring_gas = daily_miles_one_way * 2 * adjusted_commute_days_fall_spring_gas,
+    wkmiles_summer_jterm_gas = daily_miles_one_way * 2 * adjusted_commute_days_summer_jterm_gas,
+    wkmiles_fall_spring_motorcycle = daily_miles_one_way * 2 * adjusted_commute_days_fall_spring_moto,
+    wkmiles_summer_jterm_motorcycle = daily_miles_one_way * 2 * adjusted_commute_days_summer_jterm_moto,
+    
+    # combine miles separately for gas and motorcycle by using weighted commute days
+    weighted_commute_days_gas = (adjusted_commute_days_fall_spring_gas * 30 + 
+                                 adjusted_commute_days_summer_jterm_gas * (4 + 12)) / (30 + 4 + 12),
+    
+    weighted_commute_days_moto = (adjusted_commute_days_fall_spring_moto * 30 + 
+                                  adjusted_commute_days_summer_jterm_moto * (4 + 12)) / (30 + 4 + 12),
+    
+    # weekly miles based on weighted commute days
+    weekly_miles_gas = daily_miles_one_way * 2 * weighted_commute_days_gas,
+    weekly_miles_moto = daily_miles_one_way * 2 * weighted_commute_days_moto,
+    
+    # convert miles to gallons for gas and motorcycle separately
+    weekly_gallons = weekly_miles_gas / 24.4 +  weekly_miles_moto/ 44,
+    
+    #  convert miles to grams of CO2
+    weekly_gram_CO2 = weekly_gallons * 8887 / 1000000,
+    
+    # yearly gallons calculation for gas and motorcycle using wkmiles_fall_spring and wkmiles_summer_jterm
+    yearly_gallons_gas = (wkmiles_fall_spring_gas * 30 + wkmiles_summer_jterm_gas * (4 + 12)) / 24.4,
+    yearly_gallons_moto = (wkmiles_fall_spring_motorcycle * 30 + wkmiles_summer_jterm_motorcycle * (4 + 12)) / 44,
+    
+    # combine yearly gallons into one total yearly gallons number
+    yearly_gallons = yearly_gallons_gas + yearly_gallons_moto,
+    
+    #convert it to grams of CO2
+    yearly_gram_CO2 = yearly_gallons * 8887 / 1000000
+  ) %>%
+  select(c("DESIGNATION","daily_miles_one_way","weekly_miles_gas","weekly_miles_moto",
+           "yearly_gallons","weekly_gallons","weekly_gram_CO2","yearly_gram_CO2")) %>%
+  mutate_if(is.numeric, round, 3)
+
+# calculate population standard error for employees
+
+# initialize variables
+emp_gas_weekly <- wk_yr_emp_gas$weekly_gallons # individual weekly gas estimates
+emp_gas_yearly <- wk_yr_emp_gas$yearly_gallons # individual yearly gas estimates
+emp_co2_weekly <- wk_yr_emp_gas$weekly_gram_CO2 # individual weekly co2 estimates
+emp_co2_yearly <- wk_yr_emp_gas$yearly_gram_CO2 # individual yearly co2 estimates
+n <- nrow(wk_yr_emp_gas) # sample size
+k <- round(N_emp/n, 3) # calculate k
+k1 <- floor(k) # lower nearest integer
+k2 <- ceiling(k) # upper nearest integer
+alpha <- k2 - k # give more weight to k1 because k is very close to 2
+
+# perform bootstrapping
+set.seed(123)
+weekly_emp_gas_boot <- bootstrap(emp_gas_weekly, N_emp, n, k1, k2, alpha) %>% 
+  rename(pop_gas=pop_miles, sample_mean_gas=sample_mean) %>% select(-k) # weekly gas estimate
+yearly_emp_gas_boot <- bootstrap(emp_gas_yearly, N_emp, n, k1, k2, alpha) %>%
+  rename(pop_gas=pop_miles, sample_mean_gas=sample_mean) %>% select(-k) # yearly gas estimate
+weekly_emp_co2_boot <- bootstrap(emp_co2_weekly, N_emp, n, k1, k2, alpha) %>%
+  rename(pop_co2=pop_miles, sample_mean_co2=sample_mean) %>% select(-k) # weekly co2 estimate
+yearly_emp_co2_boot <- bootstrap(emp_co2_yearly, N_emp, n, k1, k2, alpha) %>%
+  rename(pop_co2=pop_miles, sample_mean_co2=sample_mean) %>% select(-k) # yearly co2 estimate
+
+# join the dataframes of gas estimate and co2 estimate
+weekly_emp_gas_co2 <- left_join(weekly_emp_gas_boot, weekly_emp_co2_boot, by="run")
+yearly_emp_gas_co2 <- left_join(yearly_emp_gas_boot, yearly_emp_co2_boot, by="run")
+```
+
+```{r}
+# remove observations where specific breakdown is unknown/ambiguous
+stu_n <- stu_n %>% filter(total_perc != 0)
+
+# calculate weekly and annual gasoline usage for students
+wk_yr_stu_gas <- stu_n %>%
+  mutate(
+    #  separate fractions for gas and motorcycle
+    gas_fraction = drive_gas / 100,
+    moto_fraction = drive_motorcycle / 100,
+    
+    # adjust commute days separately for gas and motorcycle in fall/spring, j-term, and summer
+    adjusted_commute_days_fall_spring_gas = commute_days_fall_spring * gas_fraction,
+    adjusted_commute_days_jterm_gas = commute_days_jterm * gas_fraction,
+    adjusted_commute_days_summer_gas = commute_days_summer * gas_fraction,
+    
+    adjusted_commute_days_fall_spring_moto = commute_days_fall_spring * moto_fraction,
+    adjusted_commute_days_jterm_moto = commute_days_jterm * moto_fraction,
+    adjusted_commute_days_summer_moto = commute_days_summer * moto_fraction,
+    
+    #  weekly miles for gas-powered commutes
+    wkmiles_fall_spring_gas = daily_miles_one_way * 2 * adjusted_commute_days_fall_spring_gas,
+    wkmiles_jterm_gas = daily_miles_one_way * 2 * adjusted_commute_days_jterm_gas,
+    wkmiles_summer_gas = daily_miles_one_way * 2 * adjusted_commute_days_summer_gas,
+    
+    #  weekly miles for motorcycle commutes
+    wkmiles_fall_spring_moto = daily_miles_one_way * 2 * adjusted_commute_days_fall_spring_moto,
+    wkmiles_jterm_moto= daily_miles_one_way * 2 * adjusted_commute_days_jterm_moto,
+    wkmiles_summer_moto= daily_miles_one_way * 2 * adjusted_commute_days_summer_moto,
+    
+    # combine miles separately for gas and motorcycle by using weighted commute days
+   weighted_commute_days_gas = (adjusted_commute_days_fall_spring_gas * 30 + 
+                                adjusted_commute_days_jterm_gas * 4 + 
+                                adjusted_commute_days_summer_gas* 12) / (30 + 4 + 12),
+    
+    weighted_commute_days_moto = (adjusted_commute_days_fall_spring_gas * 30 + 
+                                  adjusted_commute_days_jterm_moto * 4 +
+                                  adjusted_commute_days_summer_moto* 12) / (30 + 4 + 12),
+    
+    #  standardize weekly miles based on weighted commute days
+    weekly_miles_gas = daily_miles_one_way * 2 * weighted_commute_days_gas,
+    weekly_miles_moto = daily_miles_one_way * 2 * weighted_commute_days_moto,
+    
+    # convert miles to gallons for gas and motorcycle separately
+    weekly_gallons = weekly_miles_gas / 24.4 +  weekly_miles_moto / 44,
+    weekly_gram_CO2 = weekly_gallons * 8887 / 1000000,
+    
+    # yearly gallons calculation for gas and motorcycle using wkmiles_fall_spring and wkmiles_summer_jterm
+    yearly_gallons_gas = (wkmiles_fall_spring_gas * 30 + wkmiles_jterm_gas * 4 + wkmiles_summer_gas * 12) / 24.4,
+    yearly_gallons_moto = (wkmiles_fall_spring_moto * 30 + wkmiles_jterm_moto * 4 + wkmiles_summer_moto * 12) / 44,
+   
+    # combine yearly gallons into one total yearly gallons number
+    yearly_gallons = yearly_gallons_gas + yearly_gallons_moto,
+   
+    yearly_gram_CO2 = yearly_gallons * 8887 / 1000000
+   ) %>%
+   select(c("DESIGNATION","daily_miles_one_way","weekly_miles_gas","weekly_miles_moto",
+            "yearly_gallons","weekly_gallons","weekly_gram_CO2","yearly_gram_CO2")) %>%
+   mutate_if(is.numeric, round, 3)
+
+# calculate population standard error for students
+
+# initialize variables
+stu_gas_weekly <- wk_yr_stu_gas$weekly_gallons # individual weekly gas estimates
+stu_gas_yearly <- wk_yr_stu_gas$yearly_gallons # individual yearly gas estimates
+stu_co2_weekly <- wk_yr_stu_gas$weekly_gram_CO2 # individual weekly co2 estimates
+stu_co2_yearly <- wk_yr_stu_gas$yearly_gram_CO2 # individual yearly co2 estimates
+n <- nrow(wk_yr_stu_gas) # sample size
+k <- round(N_stu/n, 3) # calculate k
+k1 <- floor(k) # lower nearest integer
+k2 <- ceiling(k) # upper nearest integer
+alpha <- k2 - k # give more weight to k2 because k is very close to 2
+
+# perform bootstrapping
+set.seed(123)
+weekly_stu_gas_boot <- bootstrap(stu_gas_weekly, N_stu, n, k1, k2, alpha) %>% 
+  rename(pop_gas=pop_miles, sample_mean_gas=sample_mean) %>% select(-k) # weekly gas estimate
+yearly_stu_gas_boot <- bootstrap(stu_gas_yearly, N_stu, n, k1, k2, alpha) %>%
+  rename(pop_gas=pop_miles, sample_mean_gas=sample_mean) %>% select(-k) # yearly gas estimate
+weekly_stu_co2_boot <- bootstrap(stu_co2_weekly, N_stu, n, k1, k2, alpha) %>%
+  rename(pop_co2=pop_miles, sample_mean_co2=sample_mean) %>% select(-k) # weekly co2 estimate
+yearly_stu_co2_boot <- bootstrap(stu_co2_yearly, N_stu, n, k1, k2, alpha) %>%
+  rename(pop_co2=pop_miles, sample_mean_co2=sample_mean) %>% select(-k) # yearly co2 estimate
+
+# join the dataframes of gas estimate and co2 estimate
+weekly_stu_gas_co2 <- left_join(weekly_stu_gas_boot, weekly_stu_co2_boot, by="run")
+yearly_stu_gas_co2 <- left_join(yearly_stu_gas_boot, yearly_stu_co2_boot, by="run")
+```
+
+```{r}
+# output the results
+weekly_gas_pop <- c(mean(wk_yr_emp_gas$weekly_gallons)*N_emp, 
+                    mean(wk_yr_stu_gas$weekly_gallons)*N_stu)
+
+weekly_gas_se <- c(sd(weekly_emp_gas_co2$pop_gas), 
+                   sd(weekly_stu_gas_co2$pop_gas))
+
+weekly_co2_pop <- c(mean(wk_yr_emp_gas$weekly_gram_CO2)*N_emp,
+                    mean(wk_yr_stu_gas$weekly_gram_CO2)*N_stu)
+
+weekly_co2_se <- c(sd(weekly_emp_gas_co2$pop_co2),
+                   sd(weekly_stu_gas_co2$pop_co2))
+
+yearly_gas_pop <- c(mean(wk_yr_emp_gas$yearly_gallons)*N_emp,
+                    mean(wk_yr_stu_gas$yearly_gallons)*N_stu)
+
+yearly_gas_se <- c(sd(yearly_emp_gas_co2$pop_gas),
+                   sd(yearly_stu_gas_co2$pop_gas))
+
+yearly_co2_pop <- c(mean(wk_yr_emp_gas$yearly_gram_CO2)*N_emp,
+                    mean(wk_yr_stu_gas$yearly_gram_CO2)*N_stu)
+
+yearly_co2_se <- c(sd(yearly_emp_gas_co2$pop_co2),
+                   sd(yearly_stu_gas_co2$pop_co2))
+
+gas_co2_se <- data.frame(pop_weekly_gas = weekly_gas_pop, 
+                         pop_weekly_gas_se = weekly_gas_se,
+                         pop_weekly_co2 = weekly_co2_pop,
+                         pop_weekly_co2_se = weekly_co2_se,
+                         pop_yearly_gas = yearly_gas_pop,
+                         pop_yearly_gas_se = yearly_gas_se,
+                         pop_yearly_co2 = yearly_co2_pop,
+                         pop_yearly_co2_se = yearly_co2_se)
+
+rownames(gas_co2_se) <- c("Employee", "Student")
+
+gas_co2_se %>%
+  gt(rownames_to_stub=TRUE) %>%
+  gt_theme_espn() %>%
+  cols_align(align="center", columns = everything()) %>%
+  cols_label(pop_weekly_gas = "Gasoline Usage",
+             pop_weekly_gas_se = "SE",
+             pop_weekly_co2 = md("Emitted CO~2~ (mt)"),
+             pop_weekly_co2_se = "SE",
+             pop_yearly_gas = "Gasoline Usage",
+             pop_yearly_gas_se = "SE",
+             pop_yearly_co2 = md("Emitted CO~2~ (mt)"),
+             pop_yearly_co2_se = "SE") %>%
+  cols_width(vars(pop_weekly_gas, pop_weekly_co2, pop_yearly_gas, pop_yearly_co2) ~ px(100)) %>% 
+  fmt_number(columns = everything(), sep_mark = ",") %>%
+  tab_caption(caption = md("**Table 2. Weekly and Annual Gasoline Usage and CO~2~ Emission Estimate by Demographics**")) %>%
+  tab_spanner(label = "Weekly", columns = vars(c(2:5)), id="weekly") %>%
+  tab_spanner(label = "Yearly", columns = vars(c(6:9)), id="yearly") %>%
+  tab_style(style = cell_text(weight="bold"), locations = cells_column_spanners(spanners="weekly")) %>%
+  tab_style(style = cell_text(weight="bold"), locations = cells_column_spanners(spanners="yearly")) %>%
+  tab_options(table.width = px(800)) %>%
+  opt_row_striping(row_striping = FALSE)
+```
+
+Again, total gas consumption and CO~2~ emissions are higher for employees than for students, reflecting the larger employee population. Employees' weekly gas consumption and CO~2~ emissions are generally about 7 times higher than those of students, while yearly totals are approximately 10 times greater. This disparity is not unusual, as many students do not commute during the summer and J-terms, whereas employees, particularly staff, continue to work during these periods.
+
+#### **3.2.3. Total weekly and annual commuting mileage, gas usage, and CO~2~ emissions for all commuting employees and students**
+
+The following table provides an estimate of commuting mileage, gas usage, and CO~2~ emissions of all employees and students who applied for a parking permit on campus. This information can be compared to prior years' statistics to gain an understanding of how well Miami University is doing on its road to carbon neutrality by 2040.
+
+```{r}
+# combine mileage data from students and employees
+combined_mileage <- rbind(
+  week_yr_emp %>% select("DESIGNATION", "weekly_miles_combined", "yearly_miles"),
+  week_yr_stu %>% select("DESIGNATION", "weekly_miles_combined", "yearly_miles")
+)
+
+# calculate population standard error
+
+# initialize variables
+combined_weekly_miles <- combined_mileage$weekly_miles_combined # individual weekly estimates
+combined_yearly_miles <- combined_mileage$yearly_miles # individual yearly estimates
+N_combined <- N_emp + N_stu  # population
+n <- nrow(combined_mileage) # sample size
+k <- round(N_combined/n, 3) # calculate k
+  # k is exactly 2 so k1 and k2 dont really matter
+  # set alpha to 0.5
+
+# perform bootstrapping
+set.seed(123)
+weekly_combined_miles_boot <- bootstrap(combined_weekly_miles, N_combined, n, 2, 2, 0.5) # weekly estimate
+yearly_combined_miles_boot <- bootstrap(combined_yearly_miles, N_combined, n, 2, 2, 0.5) # yearly estimate
+```
+
+```{r}
+# combine gas usage data from students and employees
+combined_gas_co2 <- rbind(
+  wk_yr_emp_gas %>% select("DESIGNATION", "weekly_gallons", "yearly_gallons", "weekly_gram_CO2", "yearly_gram_CO2"),
+  wk_yr_stu_gas %>% select("DESIGNATION", "weekly_gallons", "yearly_gallons", "weekly_gram_CO2", "yearly_gram_CO2")
+)
+
+# calculate population standard error
+
+# initialize variables
+combined_weekly_gas <- combined_gas_co2$weekly_gallon
+combined_weekly_co2 <- combined_gas_co2$weekly_gram_CO2
+combined_yearly_gas <- combined_gas_co2$yearly_gallons
+combined_yearly_co2 <- combined_gas_co2$yearly_gram_CO2
+n <- nrow(combined_gas_co2) # sample size
+k <- round(N_combined/n, 3) # calculate k
+  # k is exactly 2
+  # set alpha to 0.5
+
+# perform bootstrapping
+set.seed(123)
+weekly_combined_gas_boot <- bootstrap(combined_weekly_gas, N_combined, n, 2, 2, 0.5) %>% 
+  rename(pop_gas=pop_miles, sample_mean_gas=sample_mean) %>% select(-k) # weekly gas estimate
+
+yearly_combined_gas_boot <- bootstrap(combined_yearly_gas, N_combined, n, 2, 2, 0.5) %>%
+  rename(pop_gas=pop_miles, sample_mean_gas=sample_mean) %>% select(-k) # yearly gas estimate
+
+weekly_combined_co2_boot <- bootstrap(combined_weekly_co2, N_combined, n, 2, 2, 0.5) %>%
+  rename(pop_co2=pop_miles, sample_mean_co2=sample_mean) %>% select(-k) # weekly co2 estimate
+
+yearly_combined_co2_boot <- bootstrap(combined_yearly_co2, N_combined, n, 2, 2, 0.5) %>%
+  rename(pop_co2=pop_miles, sample_mean_co2=sample_mean) %>% select(-k) # yearly co2 estimate
+
+# join the dataframes of gas estimate and co2 estimate
+weekly_combined_gas_co2 <- left_join(weekly_combined_gas_boot, weekly_combined_co2_boot, by="run")
+yearly_combined_gas_co2 <- left_join(yearly_combined_gas_boot, yearly_combined_co2_boot, by="run")
+```
+
+```{r}
+# output the results
+weekly_pop <- c(mean(combined_mileage$weekly_miles_combined)*N_combined, 
+                mean(combined_gas_co2$weekly_gallons)*N_combined,
+                mean(combined_gas_co2$weekly_gram_CO2)*N_combined)
+
+weekly_se <- c(sd(weekly_combined_miles_boot$pop_miles), 
+               sd(weekly_combined_gas_co2$pop_gas), 
+               sd(weekly_combined_gas_co2$pop_co2))
+
+yearly_pop <- c(mean(combined_mileage$yearly_miles)*N_combined,
+                mean(combined_gas_co2$yearly_gallons)*N_combined,
+                mean(combined_gas_co2$yearly_gram_CO2)*N_combined)
+
+yearly_se <- c(sd(yearly_combined_miles_boot$pop_miles),
+               sd(yearly_combined_gas_co2$pop_gas),
+               sd(yearly_combined_gas_co2$pop_co2))
+
+
+combined_gas_co2_se <- data.frame(combined_weekly_miles = weekly_pop, 
+                                  combined_weekly_se = weekly_se,
+                                  combined_yearly_miles = yearly_pop,
+                                  combined_yearly_se = yearly_se)
+
+rownames(combined_gas_co2_se) <- c("Total Mileage", "Total Gasoline Usage", "Total CO2 Emission (Grams)")
+
+combined_gas_co2_se %>%
+  gt(rownames_to_stub=TRUE) %>%
+  gt_theme_espn() %>%
+  cols_align(align="center", columns = everything()) %>%
+  cols_label(combined_weekly_miles = "Weekly Estimate",
+             combined_weekly_se = "SE",
+             combined_yearly_miles = "Yearly Estimate",
+             combined_yearly_se = "SE") %>%
+  fmt_number(columns = everything(), sep_mark = ",") %>%
+  tab_caption(caption = md("**Table 3. Estimates of Commuting Mileage, Gasoline Usage and CO~2~ Emission Estimate**")) %>%
+  tab_options(table.width = px(800)) %>%
+  opt_row_striping(row_striping = FALSE)
+```
+
+## **4. Conclusion**
+
+Estimates of commuting mileage, gasoline consumption, and CO₂ emissions were calculated for Miami University's employees and students, along with specific breakdowns for each group.
+
+However, these estimates are based on several assumptions due to data limitations. For instance, it is assumed that walking is not typically considered a form of commuting, so reported daily one-way miles exclude walking distances. Additionally, only motorcycles and gas-powered vehicles are included in gasoline consumption estimates, as relevant data, like gasoline consumed per miles, is available for these modes, and it is assumed that the focus is on gasoline use for personal vehicles. Consequently, other transportation modes, such as the BCRTA bus or carpooling, are not considered due to complications in estimating their mileage and their non-personal nature. Finally, a major caveat with this data is that it comes from an optional, non-random survey, raising questions about what population it truly represents. While the sample size is large, it does not necessarily reflect the characteristics of the overall commuting population. Consequently, any estimation method — no matter how rigorous — is inherently speculative because the underlying data does not provide a valid basis for inference about the broader population.
+
+## **5. References**
+
+Meikle, S. (2023, October 5). *Miami University commits to carbon neutrality by 2040*. Miami University. <https://miamioh.edu/news/2023/10/miami-university-commits-to-carbon-neutrality-by-2040.html>
+
+*Emissions from Commuting and University-Financed Travel \| Climate Action Plan*. (2024). Miami University. <https://miamioh.edu/about/sustainability/climate-action-plan/goals-targets/commuting-emissions-university-financed-travel.html>
+
+Chao, M.-T., & Lo, S.-H. (1985). A Bootstrap Method for Finite Population. *Sankhyā: The Indian Journal of Statistics, Series A (1961-2002)*, *47*(3), 399–405. <http://www.jstor.org/stable/25050557>
+
+R Core Team. (2024). R: A language and environment for statistical computing \[R software\]. R Foundation for Statistical Computing. <https://www.R-project.org/>
+
+Auguie, B. (2017). gridExtra: Miscellaneous functions for "Grid" graphics (R package version 2.3). <https://CRAN.R-project.org/package=gridExtra>
+
+Iannone, R., Cheng, J., Schloerke, B., Hughes, E., Lauer, A., Seo, J., Brevoort, K., & Roy, O. (2024). gt: Easily create presentation-ready display tables (R package version 0.11.0). <https://CRAN.R-project.org/package=gt>
+
+Mock, T. (2023). gtExtras: Extending 'gt' for beautiful HTML tables (Version 0.5.0) \[R package\]. CRAN. <https://CRAN.R-project.org/package=gtExtras>
+
+Wickham, H. (2016). ggplot2: Elegant graphics for data analysis \[R package\]. Springer-Verlag. <https://ggplot2.tidyverse.org>
+
+Wickham, H., Averick, M., Bryan, J., Chang, W., McGowan, L. D., François, R., Grolemund, G., Hayes, A., Henry, L., Hester, J., Kuhn, M., Pedersen, T. L., Miller, E., Bache, S. M., Müller, K., Ooms, J., Robinson, D., Seidel, D. P., Spinu, V., Takahashi, K., Vaughan, D., Wilke, C., Woo, K., & Yutani, H. (2019). Welcome to the tidyverse. Journal of Open Source Software, 4(43), 1686. <https://doi.org/10.21105/joss.01686>
+
+Wickham, H., Vaughan, D., & Girlich, M. (2024). tidyr: Tidy messy data (R package version 1.3.1). <https://CRAN.R-project.org/package=tidyr>
+
+National Highway Traffic Safety Administration. (2023, June). Traffic safety facts: Motorcycles 2021 data (DOT HS 813 466). U.S. Department of Transportation. <https://crashstats.nhtsa.dot.gov/Api/Public/ViewPublication/813466.pdf>
+
+U.S. Department of Energy. (2024, January). Average fuel economy by major vehicle category. Alternative Fuels Data Center. <https://afdc.energy.gov/data/10310>
+
+U.S. Environmental Protection Agency. (n.d.). Greenhouse gas emissions from a typical passenger vehicle. EPA. <https://www.epa.gov/greenvehicles/greenhouse-gas-emissions-typical-passenger-vehicle>
