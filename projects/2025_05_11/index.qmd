@@ -1,6 +1,6 @@
 ---
 title: "Analysis of Predictor Contributing to Social Anxiety"
-date: 2024-05-11
+date: 2025-05-11
 author: Thao Nguyen
 categories: [R, Statistical Analysis]
 output: 
