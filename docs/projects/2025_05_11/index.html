@@ -7,9 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Thao Nguyen">
-<meta name="dcterms.date" content="2024-05-11">
+<meta name="dcterms.date" content="2025-05-11">
 
-<title>Analysis of Predictor Contributing to Social Anxiety</title>
+<title>Analysis of Predictors Contributing to Social Anxiety</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -58,6 +58,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -108,7 +137,7 @@ ul.task-list li input[type="checkbox"] {
 <header id="title-block-header" class="quarto-title-block default toc-left page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-page-right">
-      <h1 class="title">Analysis of Predictor Contributing to Social Anxiety</h1>
+      <h1 class="title">Analysis of Predictors Contributing to Social Anxiety</h1>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
                 <div class="quarto-category">Statistical Analysis</div>
@@ -129,7 +158,7 @@ ul.task-list li input[type="checkbox"] {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">May 11, 2024</p>
+        <p class="date">May 11, 2025</p>
       </div>
     </div>
     
@@ -711,7 +740,7 @@ ul.task-list li input[type="checkbox"] {
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <caption>Comparison of Different Models across Different Metrics</caption>
+  <caption>Table 1.Comparison of Different Models across Different Metrics</caption>
   <thead>
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" style="color: #A9A9A9; font-family: 'Source Sans Pro'; text-transform: uppercase;" scope="col" id="Model">Model</th>
@@ -780,7 +809,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <p>Since logistic regression comes out as the best model, it can be fitted on the whole data to identify meaningful predictors. Let’s examine the summary output of the logistic model to see which variables are important at predicting high anxiety. It appears that lifestyle factors play a significant role in predicting high social anxiety. Variables such as diet quality, sleep duration, physical activity, caffeine intake, and alcohol consumption were all found to be statistically significant predictors. For each additional sleep hours, the log-odds of being in the “high” anxiety group decrease by 0.75, which is reasonable as more sleep is supposed to help with lower anxiety. The same pattern occurs for weekly hours spent on physical activity - each additional weekly hour of physical activity is associated with a 0.118 decrease in the log odds of being in the “high” anxiety group - and is also understandable because physical activity is usually thought to reduce anxiety. Increase in caffeine intake and alcohol assumption are linked with increasing chances of being in the high anxiety level, which is not surprising considering that caffeine usually worsen anxiety symptoms like nervousness, restlessness, or racing thoughts. Additionally, increased stress level is shown to lead to higher chances of being in the high anxiety group as well.</p>
-<p>The model also suggests a slight decrease in the probability of high anxiety with age, which again is not counter-intuitive given that older individuals often manage social situations better due to experience. It is interesting to note that individuals in high-intensity occupations, such as doctors or engineers, appear less prone to elevated social anxiety. This could be because these roles often demand individuals with strong mental resilience and problem-solving skills, potentially reducing their vulnerability to social anxiety.</p>
+<p>The model also suggests a slight decrease in the probability of high anxiety with age, which again is not counter-intuitive given that older individuals often manage social situations better due to experience. It is interesting to note that individuals in high-intensity occupations, such as doctors or engineers, appear less prone to elevated social anxiety. This could be because these roles often demand individuals with strong mental resilience and problem-solving skills, potentially reducing their vulnerability to social anxiety. Therefore, this outcome may reflect reverse causality; people in these fields are already accustomed to pressure and so they are more resistant to social anxiety, not that people will have a lower chance of being placed in the “high” anxiety group if they are doctors and engineers. It is interesting to note that another high-stress profession like lawyer is not statistically significant at the 0.05 level (<span class="math inline">\(p\)</span>-value = 0.0514), but its proximity to the threshold suggests it could be of interest in future research.</p>
 <p>Unexpectedly, more therapy sessions are associated with a higher chance of high anxiety. This might be a case of reverse causality as people with higher anxiety might be more likely to attend therapy in the first place. If this is the case, the model is capturing the fact that those with more anxiety are more likely to attend therapy, not necessarily that therapy causes higher chance of an individual being placed in the high anxiety group.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -1226,7 +1255,7 @@ ul.task-list li input[type="checkbox"] {
 }
 </style>
 <table class="gt_table" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
-  <caption>Coefficient Estimates of Logistic Regression</caption>
+  <caption>Table 2. Coefficient Estimates of Logistic Regression</caption>
   <thead>
     <tr class="gt_col_headings">
       <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1" scope="col" id="Coefficients">Coefficients</th>

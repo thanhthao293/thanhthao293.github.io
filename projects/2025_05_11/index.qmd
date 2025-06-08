@@ -1,5 +1,5 @@
 ---
-title: "Analysis of Predictor Contributing to Social Anxiety"
+title: "Analysis of Predictors Contributing to Social Anxiety"
 date: 2025-05-11
 author: Thao Nguyen
 categories: [R, Statistical Analysis]
@@ -472,7 +472,7 @@ as.data.frame(t(metrics),) %>%
     locations = cells_body(columns = f1.F1,
                            rows = f1.F1 == max(f1.F1, na.rm = TRUE))
   )  %>%
-  tab_caption(caption = "Comparison of Different Models across Different Metrics")
+  tab_caption(caption = "Table 1.Comparison of Different Models across Different Metrics")
 ```
 
 When plotting the ROC curves for the different models, it is apparent that logistic regression once again emerges as the top contender as it has the highest area under the curve (AUC). This also indicates that the model is highly capable of distringuishing between positive and negative classes perfectly.  
@@ -505,11 +505,12 @@ for (i in 1:length(roc_list)) {
        col = i,
        lwd = 2)
 }
+
 ```
 
 Since logistic regression comes out as the best model, it can be fitted on the whole data to identify meaningful predictors. Let's examine the summary output of the logistic model to see which variables are important at predicting high anxiety. It appears that lifestyle factors play a significant role in predicting high social anxiety. Variables such as diet quality, sleep duration, physical activity, caffeine intake, and alcohol consumption were all found to be statistically significant predictors. For each additional sleep hours, the log-odds of being in the "high" anxiety group decrease by 0.75, which is reasonable as more sleep is supposed to help with lower anxiety. The same pattern occurs for weekly hours spent on physical activity - each additional weekly hour of physical activity is associated with a 0.118 decrease in the log odds of being in the "high" anxiety group - and is also understandable because physical activity is usually thought to reduce anxiety. Increase in caffeine intake and alcohol assumption are linked with increasing chances of being in the high anxiety level, which is not surprising considering that caffeine usually worsen anxiety symptoms like nervousness, restlessness, or racing thoughts. Additionally, increased stress level is shown to lead to higher chances of being in the high anxiety group as well. 
 
-The model also suggests a slight decrease in the probability of high anxiety with age, which again is not counter-intuitive given that older individuals often manage social situations better due to experience. It is interesting to note that individuals in high-intensity occupations, such as doctors or engineers, appear less prone to elevated social anxiety. This could be because these roles often demand individuals with strong mental resilience and problem-solving skills, potentially reducing their vulnerability to social anxiety.
+The model also suggests a slight decrease in the probability of high anxiety with age, which again is not counter-intuitive given that older individuals often manage social situations better due to experience. It is interesting to note that individuals in high-intensity occupations, such as doctors or engineers, appear less prone to elevated social anxiety. This could be because these roles often demand individuals with strong mental resilience and problem-solving skills, potentially reducing their vulnerability to social anxiety. Therefore, this outcome may reflect reverse causality; people in these fields are already accustomed to pressure and so they are more resistant to social anxiety, not that people will have a lower chance of being placed in the "high" anxiety group if they are doctors and engineers. It is interesting to note that another high-stress profession like lawyer is not statistically significant at the 0.05 level ($p$-value = 0.0514), but its proximity to the threshold suggests it could be of interest in future research. 
 
 Unexpectedly, more therapy sessions are associated with a higher chance of high anxiety. This might be a case of reverse causality as people with higher anxiety might be more likely to attend therapy in the first place. If this is the case, the model is capturing the fact that those with more anxiety are more likely to attend therapy, not necessarily that therapy causes higher chance of an individual being placed in the high anxiety group.  
 
@@ -537,7 +538,7 @@ as.data.frame(coef_df) %>%
     locations = cells_body(columns = everything(),
                            rows = coef_df$`Pr(>|z|)` < 0.05)
   ) %>%
-  tab_caption("Coefficient Estimates of Logistic Regression")
+  tab_caption("Table 2. Coefficient Estimates of Logistic Regression")
 ```
 
 
