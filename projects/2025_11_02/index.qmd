@@ -1,0 +1,35 @@
+---
+title: ""
+date: 2025-05-11
+author: Thao Nguyen
+categories: [R, Statistical Analysis]
+output: 
+  html:
+    highlight: haddock
+    theme: journal
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, message=FALSE, warning=FALSE, fig.align="center")
+```
+
+```{r}
+# run libraries
+```
+
+```{r}
+# load data
+tuesdata <- tidytuesdayR::tt_load(2025, week = 46)
+
+who_tb_data <- tuesdata$who_tb_data
+```
+
+- case detection rate (cdr): disease cases reported / total number of cases 
+  - high rate = effective disease surveillance
+  
+- case notification rate (cnr): new + relapse + cases with unknown previous TB treatment / 100,000
+
+- case fatality ratio (cfr): number of deaths among the number of diagnosed cases only, regardless of time or total population
+  - vs mortality rate: number of deaths (either in general or due to a specific cause) within the entire population per unit of time (wiki)
+
+- incident case: people who develop a disease aka new cases
